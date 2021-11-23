@@ -1,0 +1,35 @@
+version: '3'
+services: 
+  admin-service: 
+    build: ./
+    image: kdev/admin
+    volumes:
+      - ./:/usr/src/app
+    networks: 
+      - backend
+    environment:
+      - MYSQL_HOST=mysql-node
+      - MYSQL_USER=lucifer
+      - MYSQL_PASS=123123
+      - MYSQL_DB=testdb
+    ports: 
+      - 1111:9999
+    container_name: admin-node
+  mysql: 
+    image: mysql
+    networks: 
+      - backend
+    environment:
+      - MYSQL_ROOT_PASSWORD=123123
+      - MYSQL_USER=lucifer
+      - MYSQL_PASSWORD=123123 
+      - MYSQL_DATABASE=testdb
+    expose: 
+      - '3306'
+    ports: 
+      - 3360:3306
+    cap_add:
+      - SYS_NICE
+    container_name: mysql-node
+networks: 
+  backend:
