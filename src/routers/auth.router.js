@@ -4,12 +4,12 @@ const controller = require('../controllers')
 
 router.post('/register', controller.authCotroller.register)
 
-router.get('/login', controller.authCotroller.login)
+router.post('/login', controller.authCotroller.login)
 
 router.get('/verify-email/:email', controller.authCotroller.requireLinkVerifyEmail)
 
 router.get('/verify-email-token/:token', controller.authCotroller.verifyEmail)
 
-
+router.delete('/logout', controller.authCotroller.logout)
 
 module.exports = router

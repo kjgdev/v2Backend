@@ -7,8 +7,17 @@ const verifyAccessToken = (req, res, next) => {
 
     jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET, (err, data) => {
 
-        if (err) flagResponseStatus.error403(res)
-        else next()
+        if (err) {
+            res.statusCode = 500
+            res.json({
+                message: err
+            })
+        }
+
+        else {
+            res.locals.userID = data.id
+            next()
+        }
     })
 }
 
@@ -26,6 +35,7 @@ const register = async (req, res, next) => {
         // dulicate email
         if (error.errno == 1062) {
             res.sendStatus(422)
+            return
         }
 
         res.statusCode = 500
@@ -57,15 +67,19 @@ const login = async (req, res, next) => {
                 break
             }
             case 3: {
-                // 
+                // email not verify
                 res.sendStatus(403)
                 break
             }
             case 4: {
+                let accessToken = generateAccessToken(result.data, "1d", process.env.ACCESS_TOKEN_SECRET)
+                await database.insertRefreshToken(result.data.id, accessToken)
+
                 res.statusCode = 200
                 res.json({
-                    accessToken: generateAccessToken(result.data, "1days",process.env.ACCESS_TOKEN_SECRET)
+                    accessToken: accessToken
                 })
+                break
             }
         }
     } catch (err) {
@@ -92,11 +106,11 @@ const requireLinkVerifyEmail = async (req, res, next) => {
             email: result.email
         }
 
-        let token = generateAccessToken(payload, '5m',process.env.VERIFY_TOKEN_SECRET)
+        let token = generateAccessToken(payload, '5m', process.env.VERIFY_TOKEN_SECRET)
 
         let emailContent = `<a href='http://localhost:9999/api/auth/verify-email-token/${token}'>verify</a>`
 
-        mail.sendMail(email,'Verify link', emailContent)
+        mail.sendMail(email, 'Verify link', emailContent)
 
         res.sendStatus(200)
 
@@ -108,27 +122,47 @@ const requireLinkVerifyEmail = async (req, res, next) => {
     }
 }
 
-const verifyEmail = (req,res,next) => {
- 
-        let token = req.params.token
-        jwt.verify(token, process.env.VERIFY_TOKEN_SECRET, (err, data) => {
+const verifyEmail = (req, res, next) => {
 
-            if (err){
-                res.statusCode = 500
-                res.json({
-                    message: err
-                })
-            } 
+    let token = req.params.token
+    jwt.verify(token, process.env.VERIFY_TOKEN_SECRET, (err, data) => {
 
-            database.verifyEmail(data.id)
-            res.sendStatus(200)
-        })
+        if (err) {
+            res.statusCode = 500
+            res.json({
+                message: err
+            })
+        }
+
+        database.verifyEmail(data.id)
+        res.sendStatus(200)
+    })
 }
+
+const logout = async (req, res, next) => {
+
+    try {
+        let token = req.body.token
+        let payload = jwt.decode(token)
+
+        await database.logout(payload.id)
+
+        res.sendStatus(200)
+
+    } catch (err) {
+        res.statusCode = 500
+        res.json({
+            message: err
+        })
+    }
+}
+
 
 module.exports = {
     register: register,
     login: login,
     verifyAccessToken: verifyAccessToken,
     requireLinkVerifyEmail: requireLinkVerifyEmail,
-    verifyEmail: verifyEmail
+    verifyEmail: verifyEmail,
+    logout: logout
 }

@@ -1,5 +1,5 @@
 require('module-alias/register')
-
+var _ = require('lodash');
 const dotenv = require('dotenv')
 dotenv.config()
 

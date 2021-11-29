@@ -11,7 +11,7 @@ const comparePassword = (pass, hashPass) => {
 }
 
 const register = async (data) => {
-    let hashPass = bcryptHash(data.password)
+    let hashPass = await bcryptHash(data.password)
     let userInfo = {
         email: data.email,
         password: hashPass,
@@ -32,8 +32,6 @@ const register = async (data) => {
     })
 }
 
-
-
 const login = async (data) => {
     let query = `SELECT * FROM user WHERE email= ?`
 
@@ -43,25 +41,42 @@ const login = async (data) => {
     }
 
     return new Promise((reslove, reject) => {
-        pool.query(query, [data.email], (err, results) => {
+        pool.query(query, [data.email],async (err, results) => {
 
             if (err) return reject(err)
 
             // email not exist
-            if (results.length == 0) resultData.code = 0
+            if (results.length == 0) {
+                resultData.code = 0
+                return reslove(resultData)
+            }
 
             let userInfo = results[0]
 
             // locked account
-            if (!userInfo.is_active) resultData.code = 2
+            if (!userInfo.is_active) {
+                resultData.code = 2
+                return reslove(resultData)
+            }
 
             // account not confirm email
-            if (!userInfo.is_confirm_email) resultData.code = 3
+            if (!userInfo.is_confirm_email) {
+                resultData.code = 3
+                return reslove(resultData)
+            }
+
+            if (userInfo.is_online == 1) {
+                await logout(userInfo.id)
+
+                // thong bao logout
+            }
 
             let hashPass = userInfo.password
             let pass = data.password
 
-            if (!comparePassword(pass, hashPass)) resultData.code = 1
+            if (!comparePassword(pass, hashPass)) {
+                resultData.code = 1
+            }
             else {
                 resultData.code = 4
                 resultData.data = {
@@ -70,7 +85,7 @@ const login = async (data) => {
                 }
             }
 
-            return reslove(resultData)
+            reslove(resultData)
         })
     })
 }
@@ -100,10 +115,68 @@ const verifyEmail = (id) => {
     })
 }
 
+const insertRefreshToken = (idUser, token) => {
+    let query = `INSERT INTO auth_token(id_user, token) VALUES(?,?)`
+
+    return new Promise((reslove, reject) => {
+        pool.query(query, [idUser, token], async (err, results) => {
+            if (err) reject(err)
+
+            await updateStatusOnline(idUser, 1)
+            reslove()
+        })
+    })
+}
+
+const updateStatusOnline = (idUser, value) => {
+    let query = `UPDATE user SET is_online = ? WHERE id = ?`
+
+    return new Promise((reslove, reject) => {
+        pool.query(query, [value, idUser], (err, results) => {
+            if (err) reject(err)
+
+            reslove()
+        })
+    })
+}
+
+const checkRefreshToken = (token) => {
+    var query = "SELECT * FROM auth_token WHERE id_user=?"
+
+    return new Promise((reslove, reject) => {
+        pool.query(query, [token], (err, results) => {
+            if (err) {
+                reject(err)
+            }
+            if (results.length > 0) reslove(true)
+            reslove(false)
+        })
+
+    })
+}
+
+const logout = (idUser) => {
+    return new Promise((reslove, reject) => {
+        var query = "DELETE FROM auth_token WHERE id_user=?"
+
+        pool.query(query, [idUser], async (err, results) => {
+            if (err) {
+                reject(err)
+            }
+
+            await updateStatusOnline(idUser, 0)
+            reslove()
+        })
+    })
+}
+
+
 module.exports = {
     register: register,
     login: login,
     checkEmailExist: checkEmailExist,
-    verifyEmail:verifyEmail
+    verifyEmail: verifyEmail,
+    insertRefreshToken: insertRefreshToken,
+    logout: logout
 }
 
