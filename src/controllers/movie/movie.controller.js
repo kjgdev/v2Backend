@@ -40,12 +40,17 @@ const getMovieById = async (req, res, next) => {
 
 const addMovieStart = async (req, res, next) => {
     try {
-        let data = {
-            idUser: res.locals.userID,
-            idMovie: req.params.id_movie
+        let idMovies = req.body.arr_id_movie
+
+        for (let i = 0; i < idMovies.length; i++) {
+            let data = {
+                idUser: res.locals.userID,
+                idMovie: idMovies[i]
+            }
+
+            await database.insertMovieStart(data)
         }
-       
-        await database.insertMovieStart(data)
+
         res.sendStatus(200)
 
     } catch (err) {
@@ -62,17 +67,17 @@ const addMovieStart = async (req, res, next) => {
     }
 }
 
-const getMovieByThreeType =async (req,res,next) => {
+const getMovieByThreeType = async (req, res, next) => {
     try {
         let results = []
 
         let types = req.body.arr_id_type
-        for(let i = 0; i< types.length;i++){
-           results = results.concat(await database.getMovieByType(types[i]))
+        for (let i = 0; i < types.length; i++) {
+            results = results.concat(await database.getMovieByType(types[i]))
         }
 
         let arrLength = req.body.number
-        results = _.sampleSize(results,arrLength)
+        results = _.sampleSize(results, arrLength)
 
         res.statusCode = 200
         res.json(results)
@@ -85,35 +90,34 @@ const getMovieByThreeType =async (req,res,next) => {
     }
 }
 
-const deleteMovieStart = async (req, res, next) => {
-    try {
-        let data = {
-            idUser: res.locals.userID,
-            idMovie: req.params.id_movie
-        }
+// const deleteMovieStart = async (req, res, next) => {
+//     try {
+//         let data = {
+//             idUser: res.locals.userID,
+//             idMovie: req.params.id_movie
+//         }
 
-        await database.deleteMovieStart(data)
-        res.sendStatus(200)
+//         await database.deleteMovieStart(data)
+//         res.sendStatus(200)
 
-    } catch (err) {
+//     } catch (err) {
 
-        if (err.errno == 1062) {
-            res.sendStatus(422)
-            return
-        }
+//         if (err.errno == 1062) {
+//             res.sendStatus(422)
+//             return
+//         }
 
-        res.statusCode = 500
-        res.json({
-            message: err
-        })
-    }
-}
+//         res.statusCode = 500
+//         res.json({
+//             message: err
+//         })
+//     }
+// }
 
 
 module.exports = {
     getAllMovie: getAllMovie,
     getMovieById: getMovieById,
     addMovieStart: addMovieStart,
-    getMovieByThreeType:getMovieByThreeType,
-    deleteMovieStart:deleteMovieStart
+    getMovieByThreeType: getMovieByThreeType
 }
