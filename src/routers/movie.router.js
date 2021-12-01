@@ -6,7 +6,7 @@ router.post('/movie-start',controller.authCotroller.verifyAccessToken, controlle
 
 // router.delete('/movie-start/:id_movie',controller.authCotroller.verifyAccessToken, controller.movieRouter.deleteMovieStart)
 
-router.get('/movie-start-type',controller.authCotroller.verifyAccessToken, controller.movieRouter.getMovieByThreeType)
+router.post('/movie-start-type',controller.authCotroller.verifyAccessToken, controller.movieRouter.getMovieByThreeType)
 
 router.get('/:id', controller.movieRouter.getMovieById)
 
