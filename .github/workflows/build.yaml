@@ -1,4 +1,4 @@
-name: backend-admin
+name: ci-cd-server
 on:
   push:
     branches: [ master ]
