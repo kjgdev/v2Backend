@@ -1,0 +1,11 @@
+name: backend-admin
+on:
+  push:
+    branches: [ master ]
+
+  jobs:
+    docker:
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout
+          user: actions/checkout@v2

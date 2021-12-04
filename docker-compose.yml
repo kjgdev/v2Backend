@@ -23,7 +23,7 @@ services:
       - MYSQL_ROOT_PASSWORD=123123
       - MYSQL_USER=lucifer
       - MYSQL_PASSWORD=123123 
-      - MYSQL_DATABASE=testdb
+      - MYSQL_DATABASE=moviedb
     expose: 
       - '3306'
     ports: 
