@@ -2,15 +2,16 @@ const express = require('express')
 const router = express.Router()
 const controller = require('../controllers')
 
-router.post('/movie-start',controller.authCotroller.verifyAccessToken, controller.movieRouter.addMovieStart)
+router.post('/movie-start',controller.authCotroller.verifyAccessToken, controller.movieController.addMovieStart)
 
-// router.delete('/movie-start/:id_movie',controller.authCotroller.verifyAccessToken, controller.movieRouter.deleteMovieStart)
+router.get('/movie-some-type/:arr_id_type&:number',controller.authCotroller.verifyAccessToken, controller.movieController.getMovieSomeType)
 
-router.post('/movie-start-type',controller.authCotroller.verifyAccessToken, controller.movieRouter.getMovieByThreeType)
+router.post('/', controller.authCotroller.verifyAccessToken, controller.movieController.addNewMovie)
 
-router.get('/:id', controller.movieRouter.getMovieById)
+router.get('/:id',controller.authCotroller.verifyAccessToken, controller.movieController.getMovieById)
 
-router.get('/', controller.movieRouter.getAllMovie)
+router.put('/:id',controller.authCotroller.verifyAccessToken, controller.movieController.updateMovie)
 
+router.get('/',controller.authCotroller.verifyAccessToken, controller.movieController.getAllMovie)
 
 module.exports = router

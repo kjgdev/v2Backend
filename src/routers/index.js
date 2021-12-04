@@ -7,5 +7,13 @@ router.use('/auth',authRouter)
 const movieRouter = require('./movie.router')
 router.use('/movie',movieRouter)
 
+const listRouter = require('./list.router')
+router.use('/list',listRouter)
+
+const userRouter = require('./user.router')
+router.use('/user',userRouter)
+
+const controlRouter = require('./control.router')
+router.use('/control',controlRouter)
 
 module.exports = router

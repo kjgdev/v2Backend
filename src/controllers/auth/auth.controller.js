@@ -1,17 +1,22 @@
 const database = require("./auth.database");
 const jwt = require('jsonwebtoken')
+const flags = require("../../configs/flags")
 const mail = require('../../configs/email')
 
 const verifyAccessToken = (req, res, next) => {
+    if (req.header('authorization') == null) {
+        let err = { errno: 100, }
+        flags.errorResponse(res, err)
+        return
+    }
+
     let accessToken = req.header('authorization').toString().slice(7)
 
     jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET, (err, data) => {
 
         if (err) {
-            res.statusCode = 500
-            res.json({
-                message: err
-            })
+            err.errno = 100
+            flags.errorResponse(res, err)
         }
 
         else {
@@ -150,10 +155,7 @@ const logout = async (req, res, next) => {
         res.sendStatus(200)
 
     } catch (err) {
-        res.statusCode = 500
-        res.json({
-            message: err
-        })
+        flags.errorResponse(res, err)
     }
 }
 
