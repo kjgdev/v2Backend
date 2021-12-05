@@ -13,18 +13,16 @@ jobs:
     steps:
       - setup_remote_docker
       - checkout
-      - run:
-          name: Build
-          command: |
-             docker build -t mkhang123/admin-backend .
-      - run:
-          name: Login
-          command: |
-            docker login -u $DOCKER_USERNAME -p $DOCKER_PASS
-      - run:
-          name: Push
-          command: |
-             docker push mkhang123/admin-backend:latest
+      - docker/check:
+          docker-username: DOCKER_USERNAME
+          docker-password: DOCKER_PASS
+      - docker/build:
+          image: $DOCKER_IMAGE
+          tag: $DOCKER_TAG
+      - docker/push:
+          digest-path: /tmp/digest.txt
+          image: $DOCKER_IMAGE
+          tag: $DOCKER_TAG
       - run:
           command: |
             echo "Digest is: $(</tmp/digest.txt)"
@@ -35,7 +33,6 @@ jobs:
           fingerprints:
             - $SSH_KEY_FINGERPRINT
       - run: ssh -oStrictHostKeyChecking=no $DEPLOYED_USER@$DEPLOYED_SERVER  './deploy.sh'
-
 
 workflows:
   build-and-deploy:
