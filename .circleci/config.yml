@@ -1,4 +1,5 @@
 version: 2.1
+
 orbs:
   node: circleci/node@4.7
   docker: circleci/docker@2.0.1
@@ -7,10 +8,9 @@ jobs:
   build-and-push:
     environment:
       DOCKER_IMAGE: kdev/admin-backend
-      DOCKER_TAGS: latest
+      DOCKER_TAG: latest
     executor: docker/docker
     steps:
-      - run: docker logout
       - setup_remote_docker
       - checkout
       - docker/check:
@@ -18,11 +18,11 @@ jobs:
           docker-password: DOCKER_PASS
       - docker/build:
           image: $DOCKER_IMAGE
-          tag: $DOCKER_TAGS
+          tag: $DOCKER_TAG
       - docker/push:
           digest-path: /tmp/digest.txt
           image: $DOCKER_IMAGE
-          tag: $DOCKER_TAGS
+          tag: $DOCKER_TAG
       - run:
           command: |
             echo "Digest is: $(</tmp/digest.txt)"
@@ -31,8 +31,8 @@ jobs:
     steps:
       - add_ssh_keys:
           fingerprints:
-            - "38:61:fe:22:f5:10:19:c6:7d:c9:96:e9:24:2a:8b:0d"
-      - run: ssh -oStrictHostKeyChecking=no root@139.180.187.185 './deploy.sh'
+            - $SSH_KEY_FINGERPRINT
+      - run: ssh -oStrictHostKeyChecking=no $DEPLOYED_USER@$DEPLOYED_SERVER  './deploy.sh'
 
 
 workflows:
