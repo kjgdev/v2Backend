@@ -1,7 +1,7 @@
 version: 2.1
 orbs:
-  node: circleci/node@4.1
-  docker: circleci/docker@1.6.0
+  node: circleci/node@4.7
+  docker: circleci/docker@2.0.1
 
 jobs:
   build-and-push:
@@ -10,6 +10,7 @@ jobs:
       DOCKER_TAGS: latest
     executor: docker/docker
     steps:
+      - run: docker logout
       - setup_remote_docker
       - checkout
       - docker/check:
