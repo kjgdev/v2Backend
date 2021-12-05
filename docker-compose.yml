@@ -2,7 +2,7 @@ version: '3'
 services: 
   admin-service: 
     build: ./
-    image: mkhang123/admin-backend:latest
+    image: mkhang123/adminbe:latest
     volumes:
       - ./:/usr/src/app
     networks: 

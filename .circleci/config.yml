@@ -7,7 +7,7 @@ orbs:
 jobs:
   build-and-push:
     environment:
-      DOCKER_IMAGE: mkhang123/admin-backend
+      DOCKER_IMAGE: mkhang123/adminbe
       DOCKER_TAG: latest
     executor: docker/docker
     steps:
@@ -32,7 +32,7 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - $SSH_KEY_FINGERPRINT
-      - run: ssh -oStrictHostKeyChecking=no $DEPLOYED_USER@$DEPLOYED_SERVER  './deploy.sh'
+      - run: ssh -oStrictHostKeyChecking=no $DEPLOYED_USER@$DEPLOYED_SERVER  './v2Backenddeploy.sh'
 
 workflows:
   build-and-deploy:
