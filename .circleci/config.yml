@@ -10,6 +10,7 @@ jobs:
       DOCKER_TAGS: latest
     executor: docker/docker
     steps:
+      - run: docker logout
       - setup_remote_docker
       - checkout
       - docker/check:
