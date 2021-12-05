@@ -2,7 +2,7 @@ version: '3'
 services: 
   admin-service: 
     build: ./
-    image: kdev/admin
+    image: kdev/admin-backend
     volumes:
       - ./:/usr/src/app
     networks: 
