@@ -2,14 +2,14 @@ version: '3'
 services: 
   admin-service: 
     build: ./
-    image: kdev/admin-backend
+    image: mkhang123/adminbe:latest
     volumes:
       - ./:/usr/src/app
     networks: 
       - backend
     environment:
       - MYSQL_HOST=139.180.187.185
-      - MYSQL_USER=lucifer
+      - MYSQL_USER=root
       - MYSQL_PASS=123123
       - MYSQL_DB=moviedb
     ports: 

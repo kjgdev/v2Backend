@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken')
 const pool = require('@configs/database');
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcryptjs')
 
 const bcryptHash = async (pass) => {
     return await bcrypt.hash(pass, 10)
