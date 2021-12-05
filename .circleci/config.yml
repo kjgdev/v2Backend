@@ -27,7 +27,7 @@ jobs:
 workflows:
   build-and-deploy:
     jobs:
-      - build-and-push
+      - build-and-push:
         filters:
           branches:
             only:
