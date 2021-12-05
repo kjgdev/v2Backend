@@ -27,11 +27,8 @@ jobs:
 workflows:
   build-and-deploy:
     jobs:
-      - node/test
       - build-and-push
         filters:
-          requires:
-            - node/test
           branches:
             only:
               - master
