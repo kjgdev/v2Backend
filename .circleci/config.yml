@@ -7,7 +7,7 @@ orbs:
 jobs:
   build-and-push:
     environment:
-      DOCKER_IMAGE: kdev/admin-backend
+      DOCKER_IMAGE: mkhang123/admin-backend
       DOCKER_TAG: latest
     executor: docker/docker
     steps:
@@ -16,7 +16,7 @@ jobs:
       - run:
           name: Build
           command: |
-             docker build -t kdev/admin-backend .
+             docker build -t mkhang123/admin-backend .
       - run:
           name: Login
           command: |
@@ -24,7 +24,7 @@ jobs:
       - run:
           name: Push
           command: |
-             docker push kdev/admin-backend:latest
+             docker push mkhang123/admin-backend:latest
       - run:
           command: |
             echo "Digest is: $(</tmp/digest.txt)"
