@@ -16,6 +16,10 @@ jobs:
       - docker/check:
           docker-username: DOCKER_USERNAME
           docker-password: DOCKER_PASS
+      - run:
+          name: Login
+          command: |
+            docker docker login -u $DOCKER_USERNAME -p $DOCKER_PASS
       - docker/build:
           image: $DOCKER_IMAGE
       - docker/push:
