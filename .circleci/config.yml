@@ -14,7 +14,7 @@ jobs:
       - checkout
       - docker/check:
           docker-username: DOCKERHUB_USERNAME
-          docker-password: DOCKERHUB_PASWORD
+          docker-password: DOCKERHUB_PASSWORD
       - docker/build:
           image: $DOCKER_IMAGE
           tag: $DOCKER_TAG
