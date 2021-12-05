@@ -6,7 +6,7 @@ orbs:
 jobs:
   build-and-push:
     environment:
-      DOCKER_IMAGE: kdev/backend
+      DOCKER_IMAGE: kdev/admin
       DOCKER_TAG: latest
     executor: docker/docker
     steps:
@@ -42,3 +42,6 @@ workflows:
           branches:
             only:
               - master
+      - deploy:
+          requires:
+            - build-and-push
