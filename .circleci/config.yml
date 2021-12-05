@@ -6,25 +6,33 @@ orbs:
 jobs:
   build-and-push:
     environment:
-      DOCKER_IMAGE: kdev/backend
-      DOCKER_TAG: latest
+      DOCKER_IMAGE: kdev/admin-backend
+      DOCKER_TAGS: latest
     executor: docker/docker
     steps:
       - setup_remote_docker
       - checkout
       - docker/check:
-          docker-username: DOCKERHUB_USERNAME
-          docker-password: DOCKERHUB_PASWORD
+          docker-username: DOCKER_USERNAME
+          docker-password: DOCKER_PASS
       - docker/build:
           image: $DOCKER_IMAGE
-          tag: $DOCKER_TAG
+          tag: $DOCKER_TAGS
       - docker/push:
           digest-path: /tmp/digest.txt
           image: $DOCKER_IMAGE
-          tag: $DOCKER_TAG
+          tag: $DOCKER_TAGS
       - run:
           command: |
             echo "Digest is: $(</tmp/digest.txt)"
+  deploy:
+    executor: docker/docker
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "38:61:fe:22:f5:10:19:c6:7d:c9:96:e9:24:2a:8b:0d"
+      - run: ssh -oStrictHostKeyChecking=no root@139.180.187.185 './deploy.sh'
+
 
 workflows:
   build-and-deploy:
@@ -34,3 +42,6 @@ workflows:
           branches:
             only:
               - master
+      - deploy:
+          requires:
+            - build-and-push
