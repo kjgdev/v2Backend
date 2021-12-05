@@ -22,9 +22,10 @@ jobs:
             docker login -u $DOCKER_USERNAME -p $DOCKER_PASS
       - docker/build:
           image: $DOCKER_IMAGE
-      - docker/push:
-          digest-path: /tmp/digest.txt
-          image: $DOCKER_IMAGE
+      - run:
+          name: Push
+          command: |
+             docker push kdev/admin-backend:latest
       - run:
           command: |
             echo "Digest is: $(</tmp/digest.txt)"
