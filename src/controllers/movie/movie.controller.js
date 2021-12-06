@@ -1,5 +1,7 @@
 const database = require("./movie.database")
 var _ = require('lodash');
+const flags = require("../../configs/flags")
+
 
 const getAllMovie = async (req, res, next) => {
     try {

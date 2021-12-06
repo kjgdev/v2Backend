@@ -86,6 +86,17 @@ const login = async (req, res, next) => {
                 })
                 break
             }
+            case 5:{
+                let accessToken = generateAccessToken(result.data, "1d", process.env.ACCESS_TOKEN_SECRET)
+                await database.insertRefreshToken(result.data.id, accessToken)
+
+                res.statusCode = 200
+                res.json({
+                    accessToken: accessToken,
+                    first: true
+                })
+                break;
+            }
         }
     } catch (err) {
         res.statusCode = 500
@@ -159,6 +170,20 @@ const logout = async (req, res, next) => {
     }
 }
 
+const changePass = async (req, res, next) => {
+    try {
+        
+        let data = req.body
+        let idUser = res.locals.userID
+
+        await database.changePass(data, idUser)
+
+        res.sendStatus(200)
+
+    } catch (err) {
+        flags.errorResponse(res, err)
+    }
+}
 
 module.exports = {
     register: register,
@@ -166,5 +191,6 @@ module.exports = {
     verifyAccessToken: verifyAccessToken,
     requireLinkVerifyEmail: requireLinkVerifyEmail,
     verifyEmail: verifyEmail,
-    logout: logout
+    logout: logout,
+    changePass:changePass
 }

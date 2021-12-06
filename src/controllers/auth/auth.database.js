@@ -3,11 +3,11 @@ const pool = require('@configs/database');
 const bcrypt = require('bcryptjs')
 
 const bcryptHash = async (pass) => {
-    return await bcrypt.hash(pass, 10)
+    return await bcrypt.hash(pass.toString(), 10)
 }
 
 const comparePassword = (pass, hashPass) => {
-    return bcrypt.compareSync(pass, hashPass);
+    return bcrypt.compareSync(pass.toString(), hashPass);
 }
 
 const register = async (data) => {
@@ -41,7 +41,7 @@ const login = async (data) => {
     }
 
     return new Promise((reslove, reject) => {
-        pool.query(query, [data.email],async (err, results) => {
+        pool.query(query, [data.email], async (err, results) => {
 
             if (err) return reject(err)
 
@@ -78,7 +78,11 @@ const login = async (data) => {
                 resultData.code = 1
             }
             else {
-                resultData.code = 4
+                if (userInfo.is_first != 1) {
+                    resultData.code = 5
+                }
+                else resultData.code = 4
+
                 resultData.data = {
                     id: userInfo.id,
                     email: userInfo.email
@@ -170,6 +174,22 @@ const logout = (idUser) => {
     })
 }
 
+const changePass = (data, idUser) => {
+    return new Promise(async (reslove, reject) => {
+        let hashPass = await bcryptHash(data.password)
+
+        var query = "UPDATE user SET password = ? WHERE id = ? "
+
+        pool.query(query, [hashPass, idUser], async (err, results) => {
+            if (err) {
+                reject(err)
+            }
+
+            await updateStatusOnline(idUser, 0)
+            reslove()
+        })
+    })
+}
 
 module.exports = {
     register: register,
@@ -177,6 +197,7 @@ module.exports = {
     checkEmailExist: checkEmailExist,
     verifyEmail: verifyEmail,
     insertRefreshToken: insertRefreshToken,
-    logout: logout
+    logout: logout,
+    changePass: changePass
 }
 

@@ -10,6 +10,8 @@ router.get('/verify-email/:email', controller.authCotroller.requireLinkVerifyEma
 
 router.get('/verify-email-token/:token', controller.authCotroller.verifyEmail)
 
+router.put('/change-pass', controller.authCotroller.verifyAccessToken, controller.authCotroller.changePass)
+
 router.delete('/logout', controller.authCotroller.logout)
 
 module.exports = router

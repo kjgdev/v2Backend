@@ -29,13 +29,17 @@ const insertMovieStart = (data) => {
     return new Promise((reslove, reject) => {
         var query = "INSERT INTO movie_start(id_user, id_movie) VALUES(?,?)"
 
+        var query2 = "UPDATE user SET is_first = 1 WHERE id = ?"
+
         pool.query(query, [data.idUser, data.idMovie], async (err, results) => {
             if (err) {
                 reject(err)
             }
-
+            pool.query(query2, [data.idUser], (err, results)=>{})
             reslove()
         })
+
+      
     })
 }
 
