@@ -156,6 +156,48 @@ const verifyEmail = (req, res, next) => {
     })
 }
 
+const forgotPass = async (req, res, next) => {
+    try {
+
+        let email = req.params.email
+        let result = await database.checkEmailExist(email)
+
+        if (!result) {
+            res.sendStatus(302)
+            return
+        }
+
+        let pass = randomPass(12)
+
+        let data = {password: pass}
+
+        await database.changePass(data,result.id)
+        
+        let emailContent = `New pass: \n ${pass}`
+
+        mail.sendMail(email, 'Reset pass', emailContent)
+
+        res.sendStatus(200)
+
+    } catch (err) {
+        res.statusCode = 500
+        res.json({
+            message: err
+        })
+    }
+}
+
+const randomPass = (length) => {
+    var result           = '';
+    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var charactersLength = characters.length;
+    for ( var i = 0; i < length; i++ ) {
+      result += characters.charAt(Math.floor(Math.random() * 
+ charactersLength));
+   }
+   return result;
+}
+
 const logout = async (req, res, next) => {
 
     try {
@@ -193,5 +235,6 @@ module.exports = {
     requireLinkVerifyEmail: requireLinkVerifyEmail,
     verifyEmail: verifyEmail,
     logout: logout,
-    changePass:changePass
+    changePass:changePass,
+    forgotPass:forgotPass
 }
