@@ -21,6 +21,7 @@ const verifyAccessToken = (req, res, next) => {
 
         else {
             res.locals.userID = data.id
+            res.locals.email = data.email
             next()
         }
     })
@@ -171,7 +172,7 @@ const forgotPass = async (req, res, next) => {
 
         let data = {password: pass}
 
-        await database.changePass(data,result.id)
+        await database.changePass(data,result.id, email)
         
         let emailContent = `New pass: \n ${pass}`
 
@@ -218,8 +219,9 @@ const changePass = async (req, res, next) => {
         
         let data = req.body
         let idUser = res.locals.userID
+        let email = res.locals.email
 
-        await database.changePass(data, idUser)
+        await database.changePass(data, idUser, email)
 
         res.sendStatus(200)
 

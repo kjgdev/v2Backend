@@ -174,20 +174,37 @@ const logout = (idUser) => {
     })
 }
 
-const changePass = (data, idUser) => {
+const changePass = (data, idUser,email) => {
     return new Promise(async (reslove, reject) => {
-        let hashPass = await bcryptHash(data.password)
 
-        var query = "UPDATE user SET password = ? WHERE id = ? "
-
-        pool.query(query, [hashPass, idUser], async (err, results) => {
-            if (err) {
+        let query1 = `SELECT * FROM user WHERE email= ?`
+        pool.query(query1, [email], async (err, results) => {
+            if (err || results.length === 0) {
                 reject(err)
             }
 
-            await updateStatusOnline(idUser, 0)
-            reslove()
+            let pass = results[0].password
+            let oldPassword = data.oldPassword
+
+            if (!comparePassword(oldPassword, pass)) {
+                reject(404)
+            }
+
+            let hashPass = await bcryptHash(data.newPassword)
+
+            var query = "UPDATE user SET password = ? WHERE id = ? "
+    
+            pool.query(query, [hashPass, idUser], async (err, results) => {
+                if (err) {
+                    reject(err)
+                }
+    
+                await updateStatusOnline(idUser, 0)
+                reslove()
+            })
         })
+
+    
     })
 }
 
