@@ -82,7 +82,8 @@ const login = async (req, res, next) => {
 
                 res.statusCode = 200
                 res.json({
-                    accessToken: accessToken
+                    accessToken: accessToken,
+                    first: false
                 })
                 break
             }

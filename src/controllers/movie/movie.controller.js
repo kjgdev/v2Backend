@@ -107,6 +107,41 @@ const updateMovie = async (req, res, next) => {
     }
 }
 
+const getType = async (req, res, next) => {
+    try {
+
+        let types = await database.getType()
+        for(let i =0;i<types.length;i++){
+            let obj = types[i]
+            let count = await database.countMovieOfType(types[i].id)
+            obj["movieCount"] = count[0].number
+            delete obj.type
+            types[i] = obj
+        }
+
+        res.statusCode = 200
+        res.json(types)
+
+    } catch (err) {
+        flags.errorResponse(res, err)
+    }
+}
+
+const getMovieByType = async (req, res, next) => {
+    try {
+        
+        let idType = req.params.id
+
+        let result = await database.getMovieByType(idType)
+
+        res.statusCode = 200
+        res.json(result)
+
+    } catch (err) {
+        flags.errorResponse(res, err)
+    }
+}
+
 
 module.exports = {
     getAllMovie: getAllMovie,
@@ -114,6 +149,7 @@ module.exports = {
     addMovieStart: addMovieStart,
     getMovieSomeType: getMovieSomeType,
     addNewMovie:addNewMovie,
-    updateMovie:updateMovie
-
+    updateMovie:updateMovie,
+    getType:getType,
+    getMovieByType:getMovieByType
 }

@@ -125,6 +125,34 @@ const updateMovie = (data, id) => {
     })
 }
 
+const countMovieOfType = (idType) => {
+    return new Promise((reslove, reject) => {
+
+        var query = `SELECT count(mv.id) AS 'number' FROM movie AS mv, movie_list AS t WHERE t.id_list = ? AND t.id_movie = mv.id `
+
+        pool.query(query, [idType], (err, results) => {
+            if (err) {
+                return reject(err)
+            }
+            else return reslove(results)
+        })
+    })
+}
+
+const getType = () => {
+    return new Promise((reslove, reject) => {
+        var query = `SELECT * FROM list WHERE type = 0`
+
+        pool.query(query, (err, results) => {
+            if (err) {
+                return reject(err)
+            }
+            
+            else return reslove(results)
+        })
+    })
+}
+
 module.exports = {
     getAllMovie: getAllMovie,
     getMovieById:getMovieById,
@@ -133,4 +161,6 @@ module.exports = {
     deleteMovieStart:deleteMovieStart,
     insertMovie:insertMovie,
     updateMovie:updateMovie,
+    getType:getType,
+    countMovieOfType:countMovieOfType
 }
