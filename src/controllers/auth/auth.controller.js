@@ -170,9 +170,7 @@ const forgotPass = async (req, res, next) => {
 
         let pass = randomPass(12)
 
-        let data = {password: pass}
-
-        await database.changePass(data,result.id, email)
+        await database.updatePass(pass,result.id)
         
         let emailContent = `New pass: \n ${pass}`
 

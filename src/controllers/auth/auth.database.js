@@ -208,6 +208,23 @@ const changePass = (data, idUser,email) => {
     })
 }
 
+const updatePass = (password, idUser) => {
+    return new Promise(async (reslove, reject) => {
+
+        let hashPass = await bcryptHash(password)
+
+        var query = "UPDATE user SET password = ? WHERE id = ? "
+
+        pool.query(query, [hashPass, idUser], async (err, results) => {
+            if (err) {
+                reject(err)
+            }
+
+            reslove()
+        })
+    })
+}
+
 module.exports = {
     register: register,
     login: login,
@@ -215,6 +232,7 @@ module.exports = {
     verifyEmail: verifyEmail,
     insertRefreshToken: insertRefreshToken,
     logout: logout,
-    changePass: changePass
+    changePass: changePass,
+    updatePass:updatePass
 }
 
