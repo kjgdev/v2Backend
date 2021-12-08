@@ -126,7 +126,7 @@ const requireLinkVerifyEmail = async (req, res, next) => {
 
         let token = generateAccessToken(payload, '5m', process.env.VERIFY_TOKEN_SECRET)
 
-        let emailContent = `<a href='http://localhost:9999/api/auth/verify-email-token/${token}'>verify</a>`
+        let emailContent = `<a href='http://139.180.187.185:1111/api/auth/verify-email-token/${token}'>verify</a>`
 
         mail.sendMail(email, 'Verify link', emailContent)
 
