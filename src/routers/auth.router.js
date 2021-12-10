@@ -12,6 +12,10 @@ router.get('/verify-email-token/:token', controller.authCotroller.verifyEmail)
 
 router.get('/forgot-pass/:email', controller.authCotroller.forgotPass)
 
+router.get('/profile', controller.authCotroller.verifyAccessToken, controller.authCotroller.getProfile)
+
+router.put('/profile', controller.authCotroller.verifyAccessToken, controller.authCotroller.updateProfile)
+
 router.put('/change-pass', controller.authCotroller.verifyAccessToken, controller.authCotroller.changePass)
 
 router.delete('/logout', controller.authCotroller.logout)

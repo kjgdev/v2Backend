@@ -228,6 +228,36 @@ const changePass = async (req, res, next) => {
     }
 }
 
+const getProfile = async (req, res, next) => {
+    try {
+
+        let idUser = res.locals.userID
+
+        let result = await database.getProfile(idUser)
+
+        res.statusCode = 200
+        res.json(result)
+        
+    } catch (err) {
+        flags.errorResponse(res, err)
+    }
+}
+
+const updateProfile = async (req, res, next) => {
+    try {
+
+        let data = req.body
+        let idUser = res.locals.userID
+
+        await database.updateProfile(data,idUser)
+
+        res.sendStatus(200)
+        
+    } catch (err) {
+        flags.errorResponse(res, err)
+    }
+}
+
 module.exports = {
     register: register,
     login: login,
@@ -236,5 +266,7 @@ module.exports = {
     verifyEmail: verifyEmail,
     logout: logout,
     changePass:changePass,
-    forgotPass:forgotPass
+    forgotPass:forgotPass,
+    getProfile:getProfile,
+    updateProfile:updateProfile
 }

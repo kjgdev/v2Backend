@@ -225,6 +225,42 @@ const updatePass = (password, idUser) => {
     })
 }
 
+const getProfile = (idUser) => {
+    return new Promise(async (reslove, reject) => {
+        
+        var query = "SELECT * FROM user WHERE id = ?"
+
+        pool.query(query, [idUser], async (err, results) => {
+            if (err) {
+                reject(err)
+            }
+
+            let data = {
+                gender: results[0].gender,
+                email: results[0].email,
+                dob: results[0].dob,
+                country: results[0].country,
+            }
+
+            reslove(data)
+        })
+    })
+}
+
+const updateProfile = (data, idUser) => {
+    return new Promise(async (reslove, reject) => {
+        
+        var query = "UPDATE user SET gender= ?, dob =?, country = ? WHERE id = ?"
+
+        pool.query(query, [data.gender, data.dob, data.country,idUser], async (err, results) => {
+            if (err) {
+                reject(err)
+            }
+
+            reslove()
+        })
+    })
+}
 module.exports = {
     register: register,
     login: login,
@@ -233,6 +269,8 @@ module.exports = {
     insertRefreshToken: insertRefreshToken,
     logout: logout,
     changePass: changePass,
-    updatePass:updatePass
+    updatePass:updatePass,
+    getProfile:getProfile,
+    updateProfile:updateProfile
 }
 
