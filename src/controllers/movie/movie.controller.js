@@ -64,7 +64,9 @@ const getMovieSomeType = async (req, res, next) => {
 
         let types = req.params.arr_id_type
         for (let i = 0; i < types.length; i++) {
-            results = results.concat(await database.getMovieByType(types[i]))
+            if (!isNaN(types[i])) {
+                results = results.concat(await database.getMovieByType(types[i]))
+            }
         }
 
         let arrLength = req.params.number
@@ -79,21 +81,21 @@ const getMovieSomeType = async (req, res, next) => {
 }
 
 const addNewMovie = async (req, res, next) => {
-    try{
+    try {
 
         let data = req.body
 
         await database.insertMovie(data)
 
         res.sendStatus(201)
-   
-    }catch (err){
+
+    } catch (err) {
         flags.errorResponse(res, err)
     }
 }
 
 const updateMovie = async (req, res, next) => {
-    try{
+    try {
 
         let data = req.body
         let idMovie = req.params.id
@@ -101,8 +103,8 @@ const updateMovie = async (req, res, next) => {
         await database.updateMovie(data, idMovie)
 
         res.sendStatus(200)
-   
-    }catch (err){
+
+    } catch (err) {
         flags.errorResponse(res, err)
     }
 }
@@ -111,7 +113,7 @@ const getType = async (req, res, next) => {
     try {
 
         let types = await database.getType()
-        for(let i =0;i<types.length;i++){
+        for (let i = 0; i < types.length; i++) {
             let obj = types[i]
             let count = await database.countMovieOfType(types[i].id)
             obj["movieCount"] = count[0].number
@@ -129,7 +131,7 @@ const getType = async (req, res, next) => {
 
 const getMovieByType = async (req, res, next) => {
     try {
-        
+
         let idType = req.params.id
 
         let result = await database.getMovieByType(idType)
@@ -142,14 +144,37 @@ const getMovieByType = async (req, res, next) => {
     }
 }
 
+const getMovieByListId = async (req, res, next) => {
+    try {
+
+        var results = []
+
+        let movieIds = req.params.arr_id_movie
+        for (let i = 0; i < movieIds.length; i++) {
+            if (!isNaN(movieIds[i])) {
+                let data = await database.getMovieById(movieIds[i])
+
+                results.push(data)
+            }
+        }
+
+        res.statusCode = 200
+        res.json(results)
+
+
+    } catch (err) {
+        flags.errorResponse(res, err)
+    }
+}
 
 module.exports = {
     getAllMovie: getAllMovie,
     getMovieById: getMovieById,
     addMovieStart: addMovieStart,
     getMovieSomeType: getMovieSomeType,
-    addNewMovie:addNewMovie,
-    updateMovie:updateMovie,
-    getType:getType,
-    getMovieByType:getMovieByType
+    addNewMovie: addNewMovie,
+    updateMovie: updateMovie,
+    getType: getType,
+    getMovieByType: getMovieByType,
+    getMovieByListId: getMovieByListId
 }

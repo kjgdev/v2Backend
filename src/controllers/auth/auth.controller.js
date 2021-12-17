@@ -84,6 +84,7 @@ const login = async (req, res, next) => {
                 res.statusCode = 200
                 res.json({
                     accessToken: accessToken,
+                    id: result.data.id,
                     first: false
                 })
                 break
@@ -95,6 +96,7 @@ const login = async (req, res, next) => {
                 res.statusCode = 200
                 res.json({
                     accessToken: accessToken,
+                    id: result.data.id,
                     first: true
                 })
                 break;
