@@ -4,9 +4,9 @@ const controller = require('../controllers')
 
 router.post('/movie-start',controller.authCotroller.verifyAccessToken, controller.movieController.addMovieStart)
 
-router.get('/movie-some-type/:arr_id_type&:number',controller.authCotroller.verifyAccessToken, controller.movieController.getMovieSomeType)
+router.post('/movie-some-type',controller.authCotroller.verifyAccessToken, controller.movieController.getMovieSomeType)
 
-router.get('/some-movie/:arr_id_movie', controller.movieController.getMovieByListId)
+router.post('/some-movie', controller.movieController.getMovieByListId)
 
 router.get('/type/:id', controller.authCotroller.verifyAccessToken, controller.movieController.getMovieByType)
 

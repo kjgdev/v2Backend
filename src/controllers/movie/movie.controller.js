@@ -25,8 +25,12 @@ const getMovieById = async (req, res, next) => {
         if (dataResponse == null) {
             res.statusCode = 204
         }
-        else
+        else{
+
+            let results = await database.getTypeByMovieId(id)
+            dataResponse["type"] = results
             res.statusCode = 200
+        }
         res.json(dataResponse)
 
     } catch (error) {
@@ -62,14 +66,14 @@ const getMovieSomeType = async (req, res, next) => {
     try {
         let results = []
 
-        let types = req.params.arr_id_type
+        let types = req.body.arr_id_type
         for (let i = 0; i < types.length; i++) {
             if (!isNaN(types[i])) {
                 results = results.concat(await database.getMovieByType(types[i]))
             }
         }
 
-        let arrLength = req.params.number
+        let arrLength = req.body.number
         results = _.sampleSize(results, arrLength)
 
         res.statusCode = 200
@@ -149,13 +153,13 @@ const getMovieByListId = async (req, res, next) => {
 
         var results = []
 
-        let movieIds = req.params.arr_id_movie
+        let movieIds = req.body.arr_id_movie
+        console.log(movieIds)
         for (let i = 0; i < movieIds.length; i++) {
-            if (!isNaN(movieIds[i])) {
                 let data = await database.getMovieById(movieIds[i])
 
                 results.push(data)
-            }
+            
         }
 
         res.statusCode = 200

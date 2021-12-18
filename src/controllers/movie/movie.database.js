@@ -153,6 +153,20 @@ const getType = () => {
     })
 }
 
+const getTypeByMovieId = (movieId) => {
+    return new Promise((reslove, reject) => {
+        var query = `SELECT l.* FROM list AS l, movie AS m, movie_list AS ml WHERE m.id = ? AND m.id = ml.id_movie AND ml.id_list = l.id`
+
+        pool.query(query,[movieId], (err, results) => {
+            if (err) {
+                return reject(err)
+            }
+            
+            else return reslove(results)
+        })
+    })
+}
+
 module.exports = {
     getAllMovie: getAllMovie,
     getMovieById:getMovieById,
@@ -162,5 +176,6 @@ module.exports = {
     insertMovie:insertMovie,
     updateMovie:updateMovie,
     getType:getType,
-    countMovieOfType:countMovieOfType
+    countMovieOfType:countMovieOfType,
+    getTypeByMovieId:getTypeByMovieId
 }
