@@ -10,7 +10,7 @@ services:
     environment:
       - MYSQL_HOST=66.42.59.144
       - MYSQL_USER=lucifer
-      - MYSQL_PASS=123123
+      - MYSQL_PASS=12344321
       - MYSQL_DB=moviedb
     ports: 
       - 1111:9999

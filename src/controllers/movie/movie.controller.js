@@ -153,7 +153,7 @@ const getMovieByListId = async (req, res, next) => {
         var results = []
 
         let movieIds = req.body.arr_id_movie
-        console.log(movieIds)
+
         for (let i = 0; i < movieIds.length; i++) {
                 let data = await database.getMovieById(movieIds[i])
 
@@ -170,6 +170,22 @@ const getMovieByListId = async (req, res, next) => {
     }
 }
 
+const addTimeWatcher = async (req, res, next) => {
+    try {
+
+        let idUser = res.locals.userID
+        let idMovie = req.body.id_movie
+        let value = req.body.value
+
+        database.addTimeWatcher(idUser, idMovie, value)
+        
+        res.sendStatus(200)
+        
+    } catch (err) {
+        flags.errorResponse(res, err)
+    }
+}
+
 module.exports = {
     getAllMovie: getAllMovie,
     getMovieById: getMovieById,
@@ -179,5 +195,6 @@ module.exports = {
     updateMovie: updateMovie,
     getType: getType,
     getMovieByType: getMovieByType,
-    getMovieByListId: getMovieByListId
+    getMovieByListId: getMovieByListId,
+    addTimeWatcher:addTimeWatcher
 }

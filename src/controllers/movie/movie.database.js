@@ -35,11 +35,11 @@ const insertMovieStart = (data) => {
             if (err) {
                 reject(err)
             }
-            pool.query(query2, [data.idUser], (err, results)=>{})
+            pool.query(query2, [data.idUser], (err, results) => { })
             reslove()
         })
 
-      
+
     })
 }
 
@@ -71,7 +71,7 @@ const getMovieByType = (idType) => {
     })
 }
 
-const insertMovie  = (data) => {
+const insertMovie = (data) => {
     return new Promise((reslove, reject) => {
         let name = data.name || ""
         let uri_trailer = data.uri_trailer || ""
@@ -89,7 +89,7 @@ const insertMovie  = (data) => {
         const query = `INSERT INTO movie(name, uri_trailer, description, uri_thumbnail, uri_avatar, age_tag, premiere_time, movie_duration, uri_movie,status, director,actor)
         VALUES(?,?,?,?,?,?,?,?,?,?,?,?)`
 
-        pool.query(query, [name, uri_trailer, description, uri_thumbnail, uri_avatar, age_tag, premiere_time, movie_duration, uri_movie,status, director, actor], (err, results) => {
+        pool.query(query, [name, uri_trailer, description, uri_thumbnail, uri_avatar, age_tag, premiere_time, movie_duration, uri_movie, status, director, actor], (err, results) => {
 
             if (err) {
                 return reject(err)
@@ -116,7 +116,7 @@ const updateMovie = (data, id) => {
         SET name = ?, uri_trailer = ?, description = ?, uri_thumbnail = ?, uri_avatar = ?, age_tag = ?, premiere_time = ?,  movie_duration = ?, uri_movie = ?, status = ?
         WHERE id = ?`
 
-        pool.query(query, [name, uri_trailer, description, uri_thumbnail, uri_avatar, age_tag, premiere_time, movie_duration, uri_movie, status,id], (err, results) => {
+        pool.query(query, [name, uri_trailer, description, uri_thumbnail, uri_avatar, age_tag, premiere_time, movie_duration, uri_movie, status, id], (err, results) => {
             if (err) {
                 return reject(err)
             }
@@ -147,7 +147,7 @@ const getType = () => {
             if (err) {
                 return reject(err)
             }
-            
+
             else return reslove(results)
         })
     })
@@ -157,25 +157,47 @@ const getTypeByMovieId = (movieId) => {
     return new Promise((reslove, reject) => {
         var query = `SELECT l.* FROM list AS l, movie AS m, movie_list AS ml WHERE m.id = ? AND m.id = ml.id_movie AND ml.id_list = l.id`
 
-        pool.query(query,[movieId], (err, results) => {
+        pool.query(query, [movieId], (err, results) => {
             if (err) {
                 return reject(err)
             }
-            
+
             else return reslove(results)
+        })
+    })
+}
+
+const addTimeWatcher = (idUser, movieId, value) => {
+    return new Promise((reslove, reject) => {
+        var query = `SELECT * FROM interactive WHERE id_user = ? AND id_movie = ?`
+
+        pool.query(query, [idUser, movieId],(err, results) => {
+            if (results.length == 0) {
+
+                var query1 = `INSERT INTO interactive (id_user, id_movie, time_watched) VALUES(?,?,?)`
+                pool.query(query1, [idUser, movieId, value], (err, results) => {
+                    if (err) {
+                        return reject(err)
+                    }
+                    console.log("1")
+                    reslove()
+                })
+            }
+         
         })
     })
 }
 
 module.exports = {
     getAllMovie: getAllMovie,
-    getMovieById:getMovieById,
-    insertMovieStart:insertMovieStart,
-    getMovieByType:getMovieByType,
-    deleteMovieStart:deleteMovieStart,
-    insertMovie:insertMovie,
-    updateMovie:updateMovie,
-    getType:getType,
-    countMovieOfType:countMovieOfType,
-    getTypeByMovieId:getTypeByMovieId
+    getMovieById: getMovieById,
+    insertMovieStart: insertMovieStart,
+    getMovieByType: getMovieByType,
+    deleteMovieStart: deleteMovieStart,
+    insertMovie: insertMovie,
+    updateMovie: updateMovie,
+    getType: getType,
+    countMovieOfType: countMovieOfType,
+    getTypeByMovieId: getTypeByMovieId,
+    addTimeWatcher: addTimeWatcher
 }

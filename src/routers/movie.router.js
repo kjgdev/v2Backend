@@ -20,4 +20,6 @@ router.put('/:id',controller.authCotroller.verifyAccessToken, controller.movieCo
 
 router.get('/',controller.authCotroller.verifyAccessToken, controller.movieController.getAllMovie)
 
+router.post('/add-time-watcher', controller.authCotroller.verifyAccessToken, controller.movieController.addTimeWatcher)
+
 module.exports = router
