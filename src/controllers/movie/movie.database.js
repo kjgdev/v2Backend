@@ -170,16 +170,49 @@ const getTypeByMovieId = (movieId) => {
 const addTimeWatcher = (idUser, movieId, value) => {
     return new Promise((reslove, reject) => {
         var query = `SELECT * FROM interactive WHERE id_user = ? AND id_movie = ?`
-
         pool.query(query, [idUser, movieId],(err, results) => {
             if (results.length == 0) {
-
                 var query1 = `INSERT INTO interactive (id_user, id_movie, time_watched) VALUES(?,?,?)`
                 pool.query(query1, [idUser, movieId, value], (err, results) => {
                     if (err) {
                         return reject(err)
                     }
-                    console.log("1")
+                    reslove()
+                })
+            }
+            else{
+                var query1 = `UPDATE interactive SET time_watched = ?  WHERE id_user = ? AND id_movie = ?`
+                pool.query(query1, [value,idUser, movieId ], (err, results) => {
+                    if (err) {
+                        return reject(err)
+                    }
+                    reslove()
+                })
+            }
+         
+        })
+    })
+}
+
+const addClicked = (idUser, movieId, value) => {
+    return new Promise((reslove, reject) => {
+        var query = `SELECT * FROM interactive WHERE id_user = ? AND id_movie = ?`
+        pool.query(query, [idUser, movieId],(err, results) => {
+            if (results.length == 0) {
+                var query1 = `INSERT INTO interactive (id_user, id_movie, is_clicked) VALUES(?,?,?)`
+                pool.query(query1, [idUser, movieId, value], (err, results) => {
+                    if (err) {
+                        return reject(err)
+                    }
+                    reslove()
+                })
+            }
+            else{
+                var query1 = `UPDATE interactive SET is_clicked = ?  WHERE id_user = ? AND id_movie = ?`
+                pool.query(query1, [value,idUser, movieId ], (err, results) => {
+                    if (err) {
+                        return reject(err)
+                    }
                     reslove()
                 })
             }
@@ -199,5 +232,6 @@ module.exports = {
     getType: getType,
     countMovieOfType: countMovieOfType,
     getTypeByMovieId: getTypeByMovieId,
-    addTimeWatcher: addTimeWatcher
+    addTimeWatcher: addTimeWatcher,
+    addClicked:addClicked
 }

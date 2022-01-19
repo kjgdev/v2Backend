@@ -186,6 +186,23 @@ const addTimeWatcher = async (req, res, next) => {
     }
 }
 
+
+const addClicked = async (req, res, next) => {
+    try {
+
+        let idUser = res.locals.userID
+        let idMovie = req.body.id_movie
+        let value = req.body.value
+
+        database.addClicked(idUser, idMovie, value)
+        
+        res.sendStatus(200)
+        
+    } catch (err) {
+        flags.errorResponse(res, err)
+    }
+}
+
 module.exports = {
     getAllMovie: getAllMovie,
     getMovieById: getMovieById,
@@ -196,5 +213,6 @@ module.exports = {
     getType: getType,
     getMovieByType: getMovieByType,
     getMovieByListId: getMovieByListId,
-    addTimeWatcher:addTimeWatcher
+    addTimeWatcher:addTimeWatcher,
+    addClicked:addClicked
 }
