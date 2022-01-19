@@ -221,6 +221,33 @@ const addClicked = (idUser, movieId, value) => {
     })
 }
 
+const addUserTimeWatched = (idUser, movieId, value) => {
+    return new Promise((reslove, reject) => {
+        var query = `SELECT * FROM watching_list WHERE id_user = ? AND id_movie = ?`
+        pool.query(query, [idUser, movieId],(err, results) => {
+            if (results.length == 0) {
+                var query1 = `INSERT INTO watching_list (id_user, id_movie, current_duration) VALUES(?,?,?)`
+                pool.query(query1, [idUser, movieId, value], (err, results) => {
+                    if (err) {
+                        return reject(err)
+                    }
+                    reslove()
+                })
+            }
+            else{
+                var query1 = `UPDATE watching_list SET current_duration = ?  WHERE id_user = ? AND id_movie = ?`
+                pool.query(query1, [value,idUser, movieId ], (err, results) => {
+                    if (err) {
+                        return reject(err)
+                    }
+                    reslove()
+                })
+            }
+         
+        })
+    })
+}
+
 module.exports = {
     getAllMovie: getAllMovie,
     getMovieById: getMovieById,
@@ -233,5 +260,6 @@ module.exports = {
     countMovieOfType: countMovieOfType,
     getTypeByMovieId: getTypeByMovieId,
     addTimeWatcher: addTimeWatcher,
-    addClicked:addClicked
+    addClicked:addClicked,
+    addUserTimeWatched:addUserTimeWatched
 }

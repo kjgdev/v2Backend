@@ -24,4 +24,7 @@ router.post('/add-time-watcher', controller.authCotroller.verifyAccessToken, con
 
 router.post('/is-clicked', controller.authCotroller.verifyAccessToken, controller.movieController.addClicked)
 
+router.post('/user-time-watch', controller.authCotroller.verifyAccessToken, controller.movieController.addUserTimeWatched)
+
+
 module.exports = router
