@@ -219,6 +219,21 @@ const addUserTimeWatched = async (req, res, next) => {
     }
 }
 
+const getWatchingList = async (req, res, next) => {
+    try {
+        let idUser = res.locals.userID
+
+        let results = await database.getWatchingList(idUser)
+
+        
+        res.statusCode = 200
+        res.json(results)
+
+    } catch (err) {
+        flags.errorResponse(res, err)
+    }
+}
+
 module.exports = {
     getAllMovie: getAllMovie,
     getMovieById: getMovieById,
@@ -231,5 +246,6 @@ module.exports = {
     getMovieByListId: getMovieByListId,
     addTimeWatcher:addTimeWatcher,
     addClicked:addClicked,
-    addUserTimeWatched:addUserTimeWatched
+    addUserTimeWatched:addUserTimeWatched,
+    getWatchingList:getWatchingList
 }

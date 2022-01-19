@@ -8,6 +8,8 @@ router.post('/movie-some-type',controller.authCotroller.verifyAccessToken, contr
 
 router.post('/some-movie', controller.movieController.getMovieByListId)
 
+router.get('/watching-list', controller.authCotroller.verifyAccessToken, controller.movieController.getWatchingList)
+
 router.get('/type/:id', controller.authCotroller.verifyAccessToken, controller.movieController.getMovieByType)
 
 router.get('/type', controller.authCotroller.verifyAccessToken, controller.movieController.getType)

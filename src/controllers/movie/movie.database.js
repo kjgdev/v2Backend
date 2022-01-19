@@ -24,7 +24,6 @@ const getMovieById = (id) => {
     })
 }
 
-
 const insertMovieStart = (data) => {
     return new Promise((reslove, reject) => {
         var query = "INSERT INTO movie_start(id_user, id_movie) VALUES(?,?)"
@@ -38,8 +37,6 @@ const insertMovieStart = (data) => {
             pool.query(query2, [data.idUser], (err, results) => { })
             reslove()
         })
-
-
     })
 }
 
@@ -243,7 +240,23 @@ const addUserTimeWatched = (idUser, movieId, value) => {
                     reslove()
                 })
             }
-         
+        })
+    })
+}
+
+
+const getWatchingList = (idUser) => {
+    return new Promise((reslove, reject) => {
+
+        const query = `SELECT mv.* FROM movie AS mv, watching_list AS t WHERE t.id_user = ? AND t.id_movie = mv.id `
+        console.log("222")
+
+        pool.query(query, [idUser], (err, results) => {
+            console.log(results.length)
+            if (err) {
+                reject(err)
+            }
+            else reslove(results)
         })
     })
 }
@@ -261,5 +274,6 @@ module.exports = {
     getTypeByMovieId: getTypeByMovieId,
     addTimeWatcher: addTimeWatcher,
     addClicked:addClicked,
-    addUserTimeWatched:addUserTimeWatched
+    addUserTimeWatched:addUserTimeWatched,
+    getWatchingList:getWatchingList
 }
