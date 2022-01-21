@@ -248,11 +248,10 @@ const addUserTimeWatched = (idUser, movieId, value) => {
 const getWatchingList = (idUser) => {
     return new Promise((reslove, reject) => {
 
-        const query = `SELECT mv.* FROM movie AS mv, watching_list AS t WHERE t.id_user = ? AND t.id_movie = mv.id `
-        console.log("222")
+        const query = `SELECT mv.*, t.current_duration FROM movie AS mv, watching_list AS t WHERE t.id_user = ? AND t.id_movie = mv.id `
 
         pool.query(query, [idUser], (err, results) => {
-            console.log(results.length)
+            
             if (err) {
                 reject(err)
             }
