@@ -2,7 +2,7 @@ const errorResponse = (res, err) => {
     console.error(err)
     switch (err.errno) {
         case 100:{
-            res.sendStatus(403)
+            res.sendStatus(401)
             break;
         }
         case 1062: {
