@@ -104,7 +104,68 @@ const statistical = () => {
     })
 }
 
+const addMovieView = (movieId) => {
+    return new Promise((reslove, reject) => {
+        var query = `SELECT * FROM interactive_movie WHERE id_movie = ? `
+        pool.query(query, [movieId],(err, results) => {
+            if (results.length == 0) {
+                var query1 = `INSERT INTO interactive_movie (id_movie, view_count) VALUES(?,1)`
+                pool.query(query1, [movieId], (err, results) => {
+                    if (err) {
+                        return reject(err)
+                    }
+                    reslove()
+                })
+            }
+            else{
+                var query1 = `UPDATE interactive_movie SET view_count = ?  WHERE id_movie = ?`
+                pool.query(query1, [results[0].view_count + 1, movieId ], (err, results) => {
+                    if (err) {
+                        return reject(err)
+                    }
+                    reslove()
+                })
+            }
+         
+        })
+    })
+}
+
+const getTopView = () => {
+    return new Promise((reslove,results) => {
+        var query = `SELECT mv.*, im.view_count FROM movie AS mv, interactive_movie AS im WHERE im.id_movie = mv.id ORDER BY view_count DESC`
+        
+        
+        pool.query(query, (err, results) => {
+            if (err) {
+                return reject(err)
+            }
+
+            else return reslove(results)
+        })
+    })
+}
+
+
+const countNewUser = (fromTime, toTime) => {
+    return new Promise((reslove,reject) => {
+        var query = `SELECT COUNT(create_at) AS new_user FROM user WHERE create_at > ? AND create_at < ?`
+        
+        
+        pool.query(query,[fromTime, toTime] ,(err, results) => {
+            if (err) {
+                return reject(err)
+            }
+
+            else return reslove(results[0])
+        })
+    })
+}
+
 module.exports = {
     searchMovie: searchMovie,
-    statistical: statistical
+    statistical: statistical,
+    addMovieView:addMovieView,
+    getTopView:getTopView,
+    countNewUser:countNewUser
 }
