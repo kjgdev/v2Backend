@@ -234,6 +234,39 @@ const addUserTimeWatched = async (req, res, next) => {
     }
 }
 
+const addLike = async (req, res, next) => {
+    try {
+
+        let idUser = res.locals.userID
+        let idMovie = req.body.id_movie
+        let value = req.body.value
+
+        database.addLike(idUser, idMovie, value)
+        
+        res.sendStatus(200)
+        
+    } catch (err) {
+        flags.errorResponse(res, err)
+    }
+}
+
+const addPlayed = async (req, res, next) => {
+    try {
+
+        let idUser = res.locals.userID
+        let idMovie = req.body.id_movie
+        let value = req.body.value
+
+        database.addPlayed(idUser, idMovie, value)
+        
+        res.sendStatus(200)
+        
+    } catch (err) {
+        flags.errorResponse(res, err)
+    }
+}
+
+
 const getWatchingList = async (req, res, next) => {
     try {
         let idUser = res.locals.userID
@@ -263,5 +296,7 @@ module.exports = {
     addClicked:addClicked,
     addUserTimeWatched:addUserTimeWatched,
     getWatchingList:getWatchingList,
-    deleteWatchinglist:deleteWatchinglist
+    deleteWatchinglist:deleteWatchinglist,
+    addLike:addLike,
+    addPlayed:addPlayed
 }

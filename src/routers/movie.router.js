@@ -28,6 +28,10 @@ router.post('/add-time-watcher', controller.authCotroller.verifyAccessToken, con
 
 router.post('/is-clicked', controller.authCotroller.verifyAccessToken, controller.movieController.addClicked)
 
+router.post('/is-like', controller.authCotroller.verifyAccessToken, controller.movieController.addLike)
+
+router.post('/is-played', controller.authCotroller.verifyAccessToken, controller.movieController.addPlayed)
+
 router.post('/user-time-watch', controller.authCotroller.verifyAccessToken, controller.movieController.addUserTimeWatched)
 
 

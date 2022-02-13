@@ -218,6 +218,61 @@ const addClicked = (idUser, movieId, value) => {
     })
 }
 
+const addLike = (idUser, movieId, value) => {
+    return new Promise((reslove, reject) => {
+        var query = `SELECT * FROM interactive WHERE id_user = ? AND id_movie = ?`
+        pool.query(query, [idUser, movieId],(err, results) => {
+            if (results.length == 0) {
+                var query1 = `INSERT INTO interactive (id_user, id_movie, is_like) VALUES(?,?,?)`
+                pool.query(query1, [idUser, movieId, value], (err, results) => {
+                    if (err) {
+                        return reject(err)
+                    }
+                    reslove()
+                })
+            }
+            else{
+                var query1 = `UPDATE interactive SET is_like = ?  WHERE id_user = ? AND id_movie = ?`
+                pool.query(query1, [value,idUser, movieId ], (err, results) => {
+                    if (err) {
+                        return reject(err)
+                    }
+                    reslove()
+                })
+            }
+         
+        })
+    })
+}
+
+const addPlayed = (idUser, movieId, value) => {
+    return new Promise((reslove, reject) => {
+        var query = `SELECT * FROM interactive WHERE id_user = ? AND id_movie = ?`
+        pool.query(query, [idUser, movieId],(err, results) => {
+            if (results.length == 0) {
+                var query1 = `INSERT INTO interactive (id_user, id_movie, is_play) VALUES(?,?,?)`
+                pool.query(query1, [idUser, movieId, value], (err, results) => {
+                    if (err) {
+                        return reject(err)
+                    }
+                    reslove()
+                })
+            }
+            else{
+                var query1 = `UPDATE interactive SET is_play = ?  WHERE id_user = ? AND id_movie = ?`
+                pool.query(query1, [value,idUser, movieId ], (err, results) => {
+                    if (err) {
+                        return reject(err)
+                    }
+                    reslove()
+                })
+            }
+         
+        })
+    })
+}
+
+
 const addUserTimeWatched = (idUser, movieId, value) => {
     return new Promise((reslove, reject) => {
         var query = `SELECT * FROM watching_list WHERE id_user = ? AND id_movie = ?`
@@ -290,5 +345,7 @@ module.exports = {
     addClicked:addClicked,
     addUserTimeWatched:addUserTimeWatched,
     getWatchingList:getWatchingList,
-    deleteWatchinglist:deleteWatchinglist
+    deleteWatchinglist:deleteWatchinglist,
+    addLike:addLike,
+    addPlayed:addPlayed
 }
