@@ -10,7 +10,7 @@ router.post('/add-view-count/:id', controller.authCotroller.verifyAccessToken, c
 
 router.get('/get-top-view/', controller.authCotroller.verifyAccessToken, controller.controlController.getTopView)
 
-router.get('/count-new-user/', controller.authCotroller.verifyAccessToken, controller.controlController.countNewUser)
+router.post('/count-new-user/', controller.authCotroller.verifyAccessToken, controller.controlController.countNewUser)
 
 
 module.exports = router

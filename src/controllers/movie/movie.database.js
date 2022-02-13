@@ -260,6 +260,21 @@ const getWatchingList = (idUser) => {
     })
 }
 
+const deleteWatchinglist = (idMovie, idUser) => {
+    return new Promise((reslove, reject) => {
+        console.log( idUser)
+        const query = `DELETE FROM watching_list WHERE id_movie = ? AND id_user = ?`
+
+        pool.query(query, [idMovie, idUser], (err, results) => {
+
+            if (err) {
+                reject(err)
+            }
+            else reslove()
+        })
+    })
+}
+
 module.exports = {
     getAllMovie: getAllMovie,
     getMovieById: getMovieById,
@@ -274,5 +289,6 @@ module.exports = {
     addTimeWatcher: addTimeWatcher,
     addClicked:addClicked,
     addUserTimeWatched:addUserTimeWatched,
-    getWatchingList:getWatchingList
+    getWatchingList:getWatchingList,
+    deleteWatchinglist:deleteWatchinglist
 }

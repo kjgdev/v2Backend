@@ -10,6 +10,8 @@ router.post('/some-movie', controller.movieController.getMovieByListId)
 
 router.get('/watching-list', controller.authCotroller.verifyAccessToken, controller.movieController.getWatchingList)
 
+router.delete('/watching-list/:id', controller.authCotroller.verifyAccessToken, controller.movieController.deleteWatchinglist)
+
 router.get('/type/:id', controller.authCotroller.verifyAccessToken, controller.movieController.getMovieByType)
 
 router.get('/type', controller.authCotroller.verifyAccessToken, controller.movieController.getType)

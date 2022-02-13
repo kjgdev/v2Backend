@@ -112,6 +112,21 @@ const updateMovie = async (req, res, next) => {
     }
 }
 
+const deleteWatchinglist = async (req, res, next) => {
+    try {
+
+        let idMovie = req.params.id
+        let idUser = res.locals.userID
+
+        await database.deleteWatchinglist(idMovie, idUser)
+
+        res.sendStatus(200)
+
+    } catch (err) {
+        flags.errorResponse(res, err)
+    }
+}
+
 const getType = async (req, res, next) => {
     try {
 
@@ -247,5 +262,6 @@ module.exports = {
     addTimeWatcher:addTimeWatcher,
     addClicked:addClicked,
     addUserTimeWatched:addUserTimeWatched,
-    getWatchingList:getWatchingList
+    getWatchingList:getWatchingList,
+    deleteWatchinglist:deleteWatchinglist
 }
