@@ -18,4 +18,7 @@ router.get('/count-device/', controller.authCotroller.verifyAccessToken, control
 
 router.get('/count-new-user-now/', controller.authCotroller.verifyAccessToken, controller.controlController.countNewUserNow)
 
+router.get('/count-view-now/', controller.authCotroller.verifyAccessToken, controller.controlController.countViewNow)
+
+
 module.exports = router

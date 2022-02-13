@@ -162,6 +162,21 @@ const countNewUser = (fromTime, toTime) => {
     })
 }
 
+const countViewNow = (fromTime, toTime) => {
+    return new Promise((reslove,reject) => {
+        var query = `SELECT COUNT(create_at) AS view FROM watching_list WHERE create_at >= ? AND create_at <= ?`
+        
+        
+        pool.query(query,[fromTime, toTime] ,(err, results) => {
+            if (err) {
+                return reject(err)
+            }
+
+            else return reslove(results[0])
+        })
+    })
+}
+
 const addCountDevice = (type) => {
     return new Promise((reslove, reject) => {
         var query = `SELECT * FROM device`
@@ -231,5 +246,6 @@ module.exports = {
     getTopView:getTopView,
     countNewUser:countNewUser,
     addCountDevice:addCountDevice,
-    getCountDevice:getCountDevice
+    getCountDevice:getCountDevice,
+    countViewNow:countViewNow
 }
