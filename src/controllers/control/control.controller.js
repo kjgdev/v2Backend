@@ -98,7 +98,7 @@ const getCountDevice = async (req, res, next) => {
         res.statusCode = 200
         res.json(
             {
-                lable:['mobile', 'tablet', 'desktop'],
+                lable:['Mobile', 'Tablet', 'Desktop'],
                 value:[result.mobile,result.tablet, result.desktop]
             }
         )

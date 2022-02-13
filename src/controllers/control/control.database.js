@@ -86,16 +86,8 @@ const countUser = () => {
 const statistical = () => {
     return new Promise(async (reslove, reject) => {
         try {
-
-            let nowTime = new Date()
-
-            let monthNow = nowTime.getMonth() + 1
     
-            let yearNow = nowTime.getFullYear()
-                        
-            let middleTime = new Date(yearNow,monthNow-1,2)
-    
-            let viewCount = await countViewNow(middleTime,nowTime)
+            let viewCount = await countView()
             let numMovie = await countListMovie()
             let numUser = await countUser()
             let responseData = {
@@ -176,6 +168,21 @@ const countViewNow = (fromTime, toTime) => {
         
         
         pool.query(query,[fromTime, toTime] ,(err, results) => {
+            if (err) {
+                return reject(err)
+            }
+
+            else return reslove(results[0])
+        })
+    })
+}
+
+const countView = () => {
+    return new Promise((reslove,reject) => {
+        var query = `SELECT COUNT(create_at) AS view FROM watching_list`
+        
+        
+        pool.query(query,(err, results) => {
             if (err) {
                 return reject(err)
             }
