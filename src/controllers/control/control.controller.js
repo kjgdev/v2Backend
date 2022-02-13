@@ -96,7 +96,12 @@ const getCountDevice = async (req, res, next) => {
         let result = await database.getCountDevice(type)
 
         res.statusCode = 200
-        res.json(result)
+        res.json(
+            {
+                lable:['mobile', 'tablet', 'desktop'],
+                value:[result.mobile,result.tablet, result.desktop]
+            }
+        )
 
     } catch (err) {
         flags.errorResponse(res, err)
@@ -159,7 +164,7 @@ const countViewNow = async (req, res, next) => {
 
         let resultNow = await database.countViewNow(middleTime,nowTime)
         let resultLast = await database.countViewNow(lastTime,middleTime)
-        console.log(resultLast)
+
         let per =  (resultNow.view - resultLast.view) / 100
 
         let resultData = {

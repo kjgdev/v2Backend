@@ -87,12 +87,20 @@ const statistical = () => {
     return new Promise(async (reslove, reject) => {
         try {
 
-            let numList = await countList()
+            let nowTime = new Date()
+
+            let monthNow = nowTime.getMonth() + 1
+    
+            let yearNow = nowTime.getFullYear()
+                        
+            let middleTime = new Date(yearNow,monthNow-1,2)
+    
+            let viewCount = await countViewNow(middleTime,nowTime)
             let numMovie = await countListMovie()
             let numUser = await countUser()
             let responseData = {
                 movie: numMovie[0].movie,
-                list: numList[0].list,
+                view: viewCount.view,
                 user: numUser[0].user
             }
 
