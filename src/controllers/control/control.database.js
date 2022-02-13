@@ -149,7 +149,7 @@ const getTopView = () => {
 
 const countNewUser = (fromTime, toTime) => {
     return new Promise((reslove,reject) => {
-        var query = `SELECT COUNT(create_at) AS new_user FROM user WHERE create_at > ? AND create_at < ?`
+        var query = `SELECT COUNT(create_at) AS new_user FROM user WHERE create_at >= ? AND create_at <= ?`
         
         
         pool.query(query,[fromTime, toTime] ,(err, results) => {

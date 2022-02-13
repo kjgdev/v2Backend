@@ -12,5 +12,6 @@ router.get('/get-top-view/', controller.authCotroller.verifyAccessToken, control
 
 router.post('/count-new-user/', controller.authCotroller.verifyAccessToken, controller.controlController.countNewUser)
 
+router.get('/count-new-user-now/', controller.authCotroller.verifyAccessToken, controller.controlController.countNewUserNow)
 
 module.exports = router

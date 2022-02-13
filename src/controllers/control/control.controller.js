@@ -74,10 +74,49 @@ const countNewUser = async (req, res, next) => {
     }
 }
 
+const countNewUserNow = async (req, res, next) => {
+    try {
+
+        let nowTime = new Date()
+
+        let monthNow = nowTime.getMonth() + 1
+
+        let yearNow = nowTime.getFullYear()
+        
+        let lastyear = monthNow == 1 ? yearNow - 1: yearNow
+        
+        let middleTime = new Date(yearNow,monthNow-1,2)
+
+        let lastMonth = monthNow == 1 ? 12 : monthNow - 1
+
+        let lastTime = new Date(lastyear, lastMonth-1,2)
+
+        let resultNow = await database.countNewUser(middleTime,nowTime)
+        let resultLast = await database.countNewUser(lastTime,middleTime)
+
+        console.log(lastTime, middleTime, nowTime)
+        console.log(resultLast, resultNow)
+
+        let per =  (resultNow.new_user - resultLast.new_user) / 100
+
+        let resultData = {
+            new_user : resultNow.new_user,
+            per: per
+        }
+
+        res.statusCode = 200
+
+        res.json(resultData)
+
+    } catch (err) {
+        flags.errorResponse(res, err)
+    }
+}
 module.exports = {
     searchMovie:searchMovie,
     statistical:statistical,
     addMovieView:addMovieView,
     getTopView:getTopView,
-    countNewUser:countNewUser
+    countNewUser:countNewUser,
+    countNewUserNow:countNewUserNow
 }
