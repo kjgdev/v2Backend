@@ -129,7 +129,7 @@ const deleteWatchinglist = async (req, res, next) => {
 
 const getType = async (req, res, next) => {
     try {
-
+        
         let types = await database.getType()
         for (let i = 0; i < types.length; i++) {
             let obj = types[i]

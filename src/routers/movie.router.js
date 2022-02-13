@@ -14,7 +14,7 @@ router.delete('/watching-list/:id', controller.authCotroller.verifyAccessToken, 
 
 router.get('/type/:id', controller.authCotroller.verifyAccessToken, controller.movieController.getMovieByType)
 
-router.get('/type', controller.authCotroller.verifyAccessToken, controller.movieController.getType)
+router.get('/type',controller.authCotroller.verifyAccessToken, controller.movieController.getType)
 
 router.post('/', controller.authCotroller.verifyAccessToken, controller.movieController.addNewMovie)
 
@@ -33,6 +33,5 @@ router.post('/is-like', controller.authCotroller.verifyAccessToken, controller.m
 router.post('/is-played', controller.authCotroller.verifyAccessToken, controller.movieController.addPlayed)
 
 router.post('/user-time-watch', controller.authCotroller.verifyAccessToken, controller.movieController.addUserTimeWatched)
-
 
 module.exports = router
