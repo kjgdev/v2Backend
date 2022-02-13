@@ -53,6 +53,7 @@ const register = async (req, res, next) => {
 
 const login = async (req, res, next) => {
     try {
+        console.log(req.rawHeaders[4])
         let dataBody = req.body
         let result = await database.login(dataBody)
 

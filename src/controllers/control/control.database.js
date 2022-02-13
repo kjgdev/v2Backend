@@ -162,10 +162,74 @@ const countNewUser = (fromTime, toTime) => {
     })
 }
 
+const addCountDevice = (type) => {
+    return new Promise((reslove, reject) => {
+        var query = `SELECT * FROM device`
+        pool.query(query,(err, results) => {
+            let query1 = ""
+            let value = 0
+            switch(type){
+                case '0': {
+                    query1 = `UPDATE device SET mobile = ?`
+                    value = results[0].mobile + 1
+                    break;
+                }
+
+                case '1':{
+                    query1 = `UPDATE device SET tablet = ?`
+                    value = results[0].tablet + 1
+                    break;
+                }
+
+                case '2':{
+                    console.log(type)
+                    query1 = `UPDATE device SET desktop = ?`
+                    value = results[0].desktop + 1
+                    break;
+                }
+
+                default:{
+                    query1 = `UPDATE device SET tablet = ?`
+                    value = results[0].tablet + 1
+                    break;
+                }
+
+            }
+
+            pool.query(query1, [value], (err, results) => {
+                if (err) {
+                    return reject(err)
+                }
+                reslove()
+            })
+        })
+    })
+}
+
+
+const getCountDevice = (type) => {
+    return new Promise((reslove, reject) => {
+        var query = `SELECT * FROM device`
+      
+        pool.query(query, (err, results) => {
+            if (err) {
+                return reject(err)
+            }
+            reslove(results[0])
+        })
+      
+          
+
+    })
+}
+
+
 module.exports = {
     searchMovie: searchMovie,
     statistical: statistical,
     addMovieView:addMovieView,
     getTopView:getTopView,
-    countNewUser:countNewUser
+    countNewUser:countNewUser,
+    addCountDevice:addCountDevice,
+    getCountDevice:getCountDevice
 }

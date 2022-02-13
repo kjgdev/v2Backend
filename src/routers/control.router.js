@@ -12,6 +12,10 @@ router.get('/get-top-view/', controller.authCotroller.verifyAccessToken, control
 
 router.post('/count-new-user/', controller.authCotroller.verifyAccessToken, controller.controlController.countNewUser)
 
+router.post('/count-device/:type', controller.authCotroller.verifyAccessToken, controller.controlController.addCountDevice)
+
+router.get('/count-device/', controller.authCotroller.verifyAccessToken, controller.controlController.getCountDevice)
+
 router.get('/count-new-user-now/', controller.authCotroller.verifyAccessToken, controller.controlController.countNewUserNow)
 
 module.exports = router

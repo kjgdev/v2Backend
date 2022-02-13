@@ -74,6 +74,35 @@ const countNewUser = async (req, res, next) => {
     }
 }
 
+const addCountDevice = async (req, res, next) => {
+    try {
+
+        let type = req.params.type
+
+       await database.addCountDevice(type)
+
+        res.sendStatus(200)
+
+    } catch (err) {
+        flags.errorResponse(res, err)
+    }
+}
+
+const getCountDevice = async (req, res, next) => {
+    try {
+
+        let type = req.params.type
+
+        let result = await database.getCountDevice(type)
+
+        res.statusCode = 200
+        res.json(result)
+
+    } catch (err) {
+        flags.errorResponse(res, err)
+    }
+}
+
 const countNewUserNow = async (req, res, next) => {
     try {
 
@@ -93,9 +122,6 @@ const countNewUserNow = async (req, res, next) => {
 
         let resultNow = await database.countNewUser(middleTime,nowTime)
         let resultLast = await database.countNewUser(lastTime,middleTime)
-
-        console.log(lastTime, middleTime, nowTime)
-        console.log(resultLast, resultNow)
 
         let per =  (resultNow.new_user - resultLast.new_user) / 100
 
@@ -118,5 +144,7 @@ module.exports = {
     addMovieView:addMovieView,
     getTopView:getTopView,
     countNewUser:countNewUser,
-    countNewUserNow:countNewUserNow
+    countNewUserNow:countNewUserNow,
+    addCountDevice:addCountDevice,
+    getCountDevice:getCountDevice
 }
