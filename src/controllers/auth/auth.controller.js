@@ -127,12 +127,16 @@ const verifyRefreshToken = async (req, res, next) => {
         let refreshToken = req.header('authorization').toString().slice(7)
 
         let check = await database.checkRefreshToken(refreshToken)
+        console.log(check)
         if(!check){
-            err.errno = 100
+            let err = { errno: 100}
             flags.errorResponse(res, err)
+            return
         }
+
         else{
-        jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, data) => {
+
+            jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, data) => {
             
             if (err) {
                 err.errno = 100
@@ -145,10 +149,11 @@ const verifyRefreshToken = async (req, res, next) => {
                 res.locals.refreshToken = refreshToken
                 next()
             }
-        })
-    }
+            })
+        }
     }
     catch(err){
+        console.error(err)
         res.statusCode = 500
         res.json({
             message: err
