@@ -29,6 +29,8 @@ const verifyAccessToken = (req, res, next) => {
 
 const generateAccessToken = (payload, time, secret) => jwt.sign(payload, secret, { expiresIn: time })
 
+const generateRefreshToken = (payload, time, secret) => jwt.sign(payload, secret, { expiresIn: time })
+
 const register = async (req, res, next) => {
     try {
 
@@ -53,7 +55,6 @@ const register = async (req, res, next) => {
 
 const login = async (req, res, next) => {
     try {
-        console.log(req.rawHeaders[4])
         let dataBody = req.body
         let result = await database.login(dataBody)
 
@@ -79,24 +80,28 @@ const login = async (req, res, next) => {
                 break
             }
             case 4: {
-                let accessToken = generateAccessToken(result.data, "1d", process.env.ACCESS_TOKEN_SECRET)
-                await database.insertRefreshToken(result.data.id, accessToken)
+                let accessToken = generateAccessToken(result.data, "1h", process.env.ACCESS_TOKEN_SECRET)
+                let refreshToken = generateRefreshToken(result.data, "7d", process.env.REFRESH_TOKEN_SECRET)
+                await database.insertRefreshToken(result.data.id, refreshToken)
 
                 res.statusCode = 200
                 res.json({
                     accessToken: accessToken,
+                    refreshToken: refreshToken,
                     id: result.data.id,
                     first: false
                 })
                 break
             }
             case 5:{
-                let accessToken = generateAccessToken(result.data, "1d", process.env.ACCESS_TOKEN_SECRET)
-                await database.insertRefreshToken(result.data.id, accessToken)
+                let accessToken = generateAccessToken(result.data, "1h", process.env.ACCESS_TOKEN_SECRET)
+                let refreshToken = generateRefreshToken(result.data, "7d", process.env.REFRESH_TOKEN_SECRET)
+                await database.insertRefreshToken(result.data.id, refreshToken)
 
                 res.statusCode = 200
                 res.json({
                     accessToken: accessToken,
+                    refreshToken: refreshToken,
                     id: result.data.id,
                     first: true
                 })
@@ -104,6 +109,83 @@ const login = async (req, res, next) => {
             }
         }
     } catch (err) {
+        res.statusCode = 500
+        res.json({
+            message: err
+        })
+    }
+}
+
+const verifyRefreshToken = async (req, res, next) => {
+    try{
+        if (req.header('authorization') == null) {
+            let err = { errno: 100, }
+            flags.errorResponse(res, err)
+            return
+        }
+    
+        let refreshToken = req.header('authorization').toString().slice(7)
+
+        let check = await database.checkRefreshToken(refreshToken)
+        if(!check){
+            err.errno = 100
+            flags.errorResponse(res, err)
+        }
+        else{
+        jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, data) => {
+            
+            if (err) {
+                err.errno = 100
+                flags.errorResponse(res, err)
+            }
+    
+            else {
+                res.locals.userID = data.id
+                res.locals.email = data.email
+                res.locals.refreshToken = refreshToken
+                next()
+            }
+        })
+    }
+    }
+    catch(err){
+        res.statusCode = 500
+        res.json({
+            message: err
+        })
+    }
+}
+
+const checkRefreshToken = async (req, res, next) => {
+    try {
+
+        res.sendStatus(200)
+        
+    } catch (err) {
+      
+        res.statusCode = 500
+        res.json({
+            message: err
+        })
+        
+    }
+}
+
+const getAccessToken = (req, res) => {
+    try {
+        let data = {
+            userID:  res.locals.userID,
+            email: res.locals.email
+        }
+        let accessToken = generateAccessToken(data, "1h", process.env.ACCESS_TOKEN_SECRET)
+        res.statusCode = 200
+        res.json({
+            accessToken: accessToken,
+            refreshToken: res.locals.refreshToken,
+        })
+
+    } catch (err) {
+        console.error(err)
         res.statusCode = 500
         res.json({
             message: err
@@ -271,5 +353,8 @@ module.exports = {
     changePass:changePass,
     forgotPass:forgotPass,
     getProfile:getProfile,
-    updateProfile:updateProfile
+    updateProfile:updateProfile,
+    getAccessToken:getAccessToken,
+    verifyRefreshToken:verifyRefreshToken,
+    checkRefreshToken: checkRefreshToken
 }

@@ -16,6 +16,10 @@ router.get('/profile', controller.authCotroller.verifyAccessToken, controller.au
 
 router.put('/profile', controller.authCotroller.verifyAccessToken, controller.authCotroller.updateProfile)
 
+router.get('/access-token', controller.authCotroller.verifyRefreshToken, controller.authCotroller.getAccessToken)
+
+router.get('/refresh-token', controller.authCotroller.verifyRefreshToken, controller.authCotroller.checkRefreshToken)
+
 router.put('/change-pass', controller.authCotroller.verifyAccessToken, controller.authCotroller.changePass)
 
 router.delete('/logout', controller.authCotroller.logout)

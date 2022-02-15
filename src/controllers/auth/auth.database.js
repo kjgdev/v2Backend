@@ -145,7 +145,7 @@ const updateStatusOnline = (idUser, value) => {
 }
 
 const checkRefreshToken = (token) => {
-    var query = "SELECT * FROM auth_token WHERE id_user=?"
+    var query = "SELECT * FROM auth_token WHERE token= ?"
 
     return new Promise((reslove, reject) => {
         pool.query(query, [token], (err, results) => {
@@ -271,6 +271,7 @@ module.exports = {
     changePass: changePass,
     updatePass:updatePass,
     getProfile:getProfile,
-    updateProfile:updateProfile
+    updateProfile:updateProfile,
+    checkRefreshToken:checkRefreshToken
 }
 
