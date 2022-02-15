@@ -20,5 +20,8 @@ router.get('/count-new-user-now/', controller.authCotroller.verifyAccessToken, c
 
 router.get('/count-view-now/', controller.authCotroller.verifyAccessToken, controller.controlController.countViewNow)
 
+router.post('/report-day/', controller.authCotroller.verifyAccessToken, controller.controlController.getReportDay)
+
+
 
 module.exports = router

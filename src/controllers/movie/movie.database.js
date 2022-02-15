@@ -192,6 +192,8 @@ const addTimeWatcher = (idUser, movieId, value) => {
 }
 
 const addClicked = (idUser, movieId, value) => {
+    addReportDay(0,1,0)
+
     return new Promise((reslove, reject) => {
         var query = `SELECT * FROM interactive WHERE id_user = ? AND id_movie = ?`
         pool.query(query, [idUser, movieId],(err, results) => {
@@ -274,6 +276,7 @@ const addPlayed = (idUser, movieId, value) => {
 
 
 const addUserTimeWatched = (idUser, movieId, value) => {
+    addReportDay(0,0,1)
     return new Promise((reslove, reject) => {
         var query = `SELECT * FROM watching_list WHERE id_user = ? AND id_movie = ?`
         pool.query(query, [idUser, movieId],(err, results) => {
@@ -326,6 +329,35 @@ const deleteWatchinglist = (idMovie, idUser) => {
                 reject(err)
             }
             else reslove()
+        })
+    })
+}
+
+const addReportDay = (visit = 0, click = 0, view = 0) => {
+    return new Promise((reslove, reject) => {
+        let date = new Date()
+        let dateStr = `${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`
+        var query = `SELECT * FROM report_day WHERE create_at = ? `
+        pool.query(query, [dateStr],(err, results) => {
+            if (results.length == 0) {
+                var query1 = `INSERT INTO report_day (click, visit, view) VALUES(?,?,?)`
+                pool.query(query1, [click, visit, view], (err, results) => {
+                    if (err) {
+                        return reject(err)
+                    }
+                    reslove()
+                })
+            }
+            else{
+                var query1 = `UPDATE report_day SET view = ? , click = ?, visit = ? WHERE create_at = ?`
+                pool.query(query1, [results[0].view + view, results[0].click + click,results[0].visit + visit , dateStr], (err, results) => {
+                    if (err) {
+                        return reject(err)
+                    }
+                    reslove()
+                })
+            }
+         
         })
     })
 }

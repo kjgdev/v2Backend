@@ -131,10 +131,39 @@ const addMovieView = (movieId) => {
     })
 }
 
+
+const addReportDay = (visit = 0, click = 0, view = 0) => {
+    return new Promise((reslove, reject) => {
+        let date = new Date()
+        let dateStr = `${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`
+        var query = `SELECT * FROM report_day WHERE create_at = ? `
+        pool.query(query, [dateStr],(err, results) => {
+            if (results.length == 0) {
+                var query1 = `INSERT INTO report_day (click, visit, view) VALUES(?,?,?)`
+                pool.query(query1, [click, visit, view], (err, results) => {
+                    if (err) {
+                        return reject(err)
+                    }
+                    reslove()
+                })
+            }
+            else{
+                var query1 = `UPDATE report_day SET view = ? , click = ?, visit = ? WHERE create_at = ?`
+                pool.query(query1, [results[0].view + view, results[0].click + click,results[0].visit + visit , dateStr], (err, results) => {
+                    if (err) {
+                        return reject(err)
+                    }
+                    reslove()
+                })
+            }
+         
+        })
+    })
+}
+
 const getTopView = () => {
-    return new Promise((reslove,results) => {
+    return new Promise((reslove,reject) => {
         var query = `SELECT mv.*, im.view_count FROM movie AS mv, interactive_movie AS im WHERE im.id_movie = mv.id ORDER BY view_count DESC`
-        
         
         pool.query(query, (err, results) => {
             if (err) {
@@ -145,6 +174,21 @@ const getTopView = () => {
         })
     })
 }
+
+const getReportDay = (from,to) => {
+    return new Promise((reslove,reject) => {
+        var query = `SELECT *  FROM report_day WHERE create_at >= ? AND create_at <= ?`
+        
+        pool.query(query, [from,to],(err, results) => {
+            if (err) {
+                return reject(err)
+            }
+
+            else return reslove(results)
+        })
+    })
+}
+
 
 
 const countNewUser = (fromTime, toTime) => {
@@ -193,6 +237,7 @@ const countView = () => {
 }
 
 const addCountDevice = (type) => {
+    addReportDay(1,0,0)
     return new Promise((reslove, reject) => {
         var query = `SELECT * FROM device`
         pool.query(query,(err, results) => {
@@ -262,5 +307,6 @@ module.exports = {
     countNewUser:countNewUser,
     addCountDevice:addCountDevice,
     getCountDevice:getCountDevice,
-    countViewNow:countViewNow
+    countViewNow:countViewNow,
+    getReportDay:getReportDay
 }

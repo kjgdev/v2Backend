@@ -74,6 +74,22 @@ const countNewUser = async (req, res, next) => {
     }
 }
 
+const getReportDay = async (req, res, next) => {
+    try {
+
+        let fromTime = req.body.from_time
+        let toTime = req.body.to_time
+
+        let result = await database.getReportDay(fromTime,toTime)
+
+        res.statusCode = 200
+        res.json(result)
+
+    } catch (err) {
+        flags.errorResponse(res, err)
+    }
+}
+
 const addCountDevice = async (req, res, next) => {
     try {
 
@@ -190,5 +206,6 @@ module.exports = {
     countNewUserNow:countNewUserNow,
     addCountDevice:addCountDevice,
     getCountDevice:getCountDevice,
-    countViewNow:countViewNow
+    countViewNow:countViewNow,
+    getReportDay:getReportDay
 }
