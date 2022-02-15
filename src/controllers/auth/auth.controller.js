@@ -57,7 +57,6 @@ const login = async (req, res, next) => {
     try {
         let dataBody = req.body
         let result = await database.login(dataBody)
-
         switch (result.code) {
             case 0: {
                 // email not exist
