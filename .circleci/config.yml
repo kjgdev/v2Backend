@@ -6,8 +6,7 @@ orbs:
 
 jobs:
   build-and-push:
-    working_directory: ../BE
-
+    working_directory: ~/BE
     environment:
       DOCKER_IMAGE: mkhang123/adminbe
       DOCKER_TAG: latest
@@ -29,7 +28,7 @@ jobs:
           command: |
             echo "Digest is: $(</tmp/digest.txt)"
   build-and-push2:
-    working_directory: ../FE
+    working_directory: ~/FE
     environment:
       DOCKER_IMAGE: mkhang123/frontend
       DOCKER_TAG: latest
@@ -74,3 +73,4 @@ workflows:
       - deploy:
           requires:
             - build-and-push
+            - build-and-push2

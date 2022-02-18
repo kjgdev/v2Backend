@@ -23,6 +23,8 @@ services:
     ports:
       - 3000:3000
     stdin_open: true
+    networks: 
+      - backend
     environment:
       - CHOKIDAR_USEPOLLING=true
     command: npm start
