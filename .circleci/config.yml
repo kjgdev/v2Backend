@@ -6,14 +6,15 @@ orbs:
 
 jobs:
   build-and-push:
-    working_directory: ~/BE
+    working_directory: ~/v2Backend/BE
     environment:
       DOCKER_IMAGE: mkhang123/adminbe
       DOCKER_TAG: latest
     executor: docker/docker
     steps:
       - setup_remote_docker
-      - checkout
+      - checkout:
+          path: ~/v2Backend
       - docker/check:
           docker-username: DOCKER_USERNAME
           docker-password: DOCKER_PASS
@@ -28,14 +29,15 @@ jobs:
           command: |
             echo "Digest is: $(</tmp/digest.txt)"
   build-and-push2:
-    working_directory: ~/FE
+    working_directory: ~/v2Backend/FE
     environment:
       DOCKER_IMAGE: mkhang123/frontend
       DOCKER_TAG: latest
     executor: docker/docker
     steps:
       - setup_remote_docker
-      - checkout
+      - checkout:
+          path: ~/v2Backend
       - docker/check:
           docker-username: DOCKER_USERNAME
           docker-password: DOCKER_PASS
