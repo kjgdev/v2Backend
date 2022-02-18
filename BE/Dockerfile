@@ -6,7 +6,7 @@ COPY package*.json ./
 
 RUN npm install
 
-COPY . .
+COPY ./BE .
 
 # mo port tren docker
 EXPOSE 9999
