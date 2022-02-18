@@ -6,7 +6,7 @@ orbs:
 
 jobs:
   build-and-push:
-    working_directory: BE
+    working_directory: ~/v2Backend/BE
 
     environment:
       DOCKER_IMAGE: mkhang123/adminbe
