@@ -14,5 +14,17 @@ services:
       - MYSQL_DB=moviedb
     ports: 
       - 1111:9999
+  frontend:
+    container_name: frontend
+    build: ./my-app
+    volumes:
+      - './:/app'
+      - '/app/node_modules'
+    ports:
+      - 3000:3000
+    stdin_open: true
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    command: npm start
 networks: 
   backend:
