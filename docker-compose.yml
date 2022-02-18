@@ -1,7 +1,7 @@
 version: '3'
 services: 
   admin-service: 
-    build: ./
+    build: ./BE
     image: mkhang123/adminbe:latest
     volumes:
       - ./:/usr/src/app
@@ -15,7 +15,7 @@ services:
     ports: 
       - 1111:9999
   frontend:
-    build: ./myapp
+    build: ./FE
     image: mkhang123/frontend:latest
     volumes:
       - './:/app'
