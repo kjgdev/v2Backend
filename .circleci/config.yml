@@ -26,6 +26,27 @@ jobs:
       - run:
           command: |
             echo "Digest is: $(</tmp/digest.txt)"
+  build-and-push2:
+    environment:
+      DOCKER_IMAGE: mkhang123/frontend
+      DOCKER_TAG: latest
+    executor: docker/docker
+    steps:
+      - setup_remote_docker
+      - checkout
+      - docker/check:
+          docker-username: DOCKER_USERNAME
+          docker-password: DOCKER_PASS
+      - docker/build:
+          image: $DOCKER_IMAGE
+          tag: $DOCKER_TAG
+      - docker/push:
+          digest-path: /tmp/digest.txt
+          image: $DOCKER_IMAGE
+          tag: $DOCKER_TAG
+      - run:
+          command: |
+            echo "Digest is: $(</tmp/digest.txt)"
   deploy:
     executor: docker/docker
     steps:
@@ -38,6 +59,11 @@ workflows:
   build-and-deploy:
     jobs:
       - build-and-push:
+        filters:
+          branches:
+            only:
+              - master
+      - build-and-push2:
         filters:
           branches:
             only:
