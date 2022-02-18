@@ -15,8 +15,8 @@ services:
     ports: 
       - 1111:9999
   frontend:
-    container_name: frontend
-    build: ./my-app
+    build: ./myapp
+    image: mkhang123/frontend:latest
     volumes:
       - './:/app'
       - '/app/node_modules'
