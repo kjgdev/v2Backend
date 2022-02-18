@@ -14,7 +14,8 @@ jobs:
     executor: docker/docker
     steps:
       - setup_remote_docker
-      - checkout
+      - checkout:
+          path: ~/v2Backend
       - docker/check:
           docker-username: DOCKER_USERNAME
           docker-password: DOCKER_PASS
