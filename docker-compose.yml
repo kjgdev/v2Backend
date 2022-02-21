@@ -1,6 +1,7 @@
 version: '3'
 services: 
   admin-service: 
+    build: ./
     image: mkhang123/adminbe:latest
     volumes:
       - ./:/usr/src/app
