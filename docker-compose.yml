@@ -1,7 +1,8 @@
 version: '3'
 services: 
   admin-service: 
-    image: mkhang123/adminbe:latest
+    build: .
+    # image: mkhang123/adminbe:latest
     volumes:
       - ./:/usr/src/app
       - /usr/src/app/node_modules
