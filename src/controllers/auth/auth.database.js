@@ -227,13 +227,15 @@ const updatePass = (password, idUser) => {
 
 const getProfile = (idUser) => {
     return new Promise(async (reslove, reject) => {
-        
+        console.log(idUser)
         var query = "SELECT * FROM user WHERE id = ?"
 
         pool.query(query, [idUser], async (err, results) => {
             if (err) {
                 reject(err)
             }
+
+            console.log(results)
 
             let data = {
                 gender: results[0].gender,

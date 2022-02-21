@@ -83,6 +83,8 @@ const login = async (req, res, next) => {
                 let refreshToken = generateRefreshToken(result.data, "7d", process.env.REFRESH_TOKEN_SECRET)
                 await database.insertRefreshToken(result.data.id, refreshToken)
 
+                console.log(result.data)
+
                 res.statusCode = 200
                 res.json({
                     accessToken: accessToken,
@@ -178,9 +180,11 @@ const checkRefreshToken = async (req, res, next) => {
 const getAccessToken = (req, res) => {
     try {
         let data = {
-            userID:  res.locals.userID,
+            id:  res.locals.userID,
             email: res.locals.email
         }
+
+        console.log(data)
         let accessToken = generateAccessToken(data, "1h", process.env.ACCESS_TOKEN_SECRET)
         res.statusCode = 200
         res.json({
@@ -323,7 +327,7 @@ const getProfile = async (req, res, next) => {
         let idUser = res.locals.userID
 
         let result = await database.getProfile(idUser)
-
+        console.log(result)
         res.statusCode = 200
         res.json(result)
         
