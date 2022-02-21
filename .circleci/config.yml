@@ -43,11 +43,6 @@ workflows:
           branches:
             only:
               - master
-      - build-and-push2:
-        filters:
-          branches:
-            only:
-              - master
       - deploy:
           requires:
             - build-and-push
