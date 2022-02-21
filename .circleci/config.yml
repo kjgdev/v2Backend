@@ -6,32 +6,8 @@ orbs:
 
 jobs:
   build-and-push:
-    working_directory: ~/v2Backend/BE
     environment:
       DOCKER_IMAGE: mkhang123/adminbe
-      DOCKER_TAG: latest
-    executor: docker/docker
-    steps:
-      - setup_remote_docker
-      - checkout:
-          path: ~/v2Backend
-      - docker/check:
-          docker-username: DOCKER_USERNAME
-          docker-password: DOCKER_PASS
-      - docker/build:
-          image: $DOCKER_IMAGE
-          tag: $DOCKER_TAG
-      - docker/push:
-          digest-path: /tmp/digest.txt
-          image: $DOCKER_IMAGE
-          tag: $DOCKER_TAG
-      - run:
-          command: |
-            echo "Digest is: $(</tmp/digest.txt)"
-  build-and-push2:
-    working_directory: ~/v2Backend/FE
-    environment:
-      DOCKER_IMAGE: mkhang123/frontend
       DOCKER_TAG: latest
     executor: docker/docker
     steps:
@@ -75,4 +51,3 @@ workflows:
       - deploy:
           requires:
             - build-and-push
-            - build-and-push2
