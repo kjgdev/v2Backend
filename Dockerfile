@@ -1,12 +1,14 @@
-FROM node:10.9.0
+FROM node:10
 
+RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 
+COPY package.json /usr/src/app/
 COPY package*.json ./
 
 RUN npm install
 
-COPY . .
+COPY . /usr/src/app
 
 # mo port tren docker
 EXPOSE 9999
