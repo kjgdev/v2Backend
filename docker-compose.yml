@@ -4,8 +4,8 @@ services:
     build: .
     image: mkhang123/adminbe:latest
     volumes:
-      - ./src:/usr/app
-      - /usr/app/node_modules
+      - ./:/app
+      - /app/node_modules
     networks: 
       - backend
     environment:
