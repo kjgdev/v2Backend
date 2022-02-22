@@ -35,7 +35,7 @@ const insertMovieStart = (data) => {
                 reject(err)
             }
             pool.query(query2, [data.idUser], (err, results) => { })
-            addClicked(dât.idUser, data.idMovie, 1)
+            addClicked(data.idUser, data.idMovie, 1)
             reslove()
         })
     })
