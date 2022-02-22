@@ -246,7 +246,6 @@ const verifyEmail = (req, res, next) => {
         }
 
         database.verifyEmail(data.id)
-        res.sendStatus(200)
         res.writeHead(301, {
             Location: `http://app.chilfix.online`
           }).end()
