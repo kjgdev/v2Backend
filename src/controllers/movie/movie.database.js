@@ -12,32 +12,31 @@ const getAllMovie = () => {
     })
 }
 
-const getMovieById = (id, idUser) => {
+const getMovieById = (id) => {
     let query = `SELECT * FROM movie WHERE id=?`
-    let query1 = "SELECT * FROM interactive WHERE id_user = ? AND id_movie = ?"
 
     return new Promise((reslove, reject) => {
         pool.query(query, [id], (err, results) => {
-            if (err) reject(err)
-
-            pool.query(query1, [idUser, id], (err1, results1) => {
-                if (err1) reject(err1)
-                if (results.length> 0){
-                let data = results[0]
-
-                if(results1.length == 0){
-                    data["is_like"] = 0
-                }
-                else {
-                    data["is_like"] = results1[0].is_like
-                }
-            
-                reslove(data)
+            if (err) {
+                reject(err)
             }
-            reject([])
-            })
+
+            reslove(results[0])
         })
     })
+}
+
+const checkLike = (idMovie, idUser) => {
+    let query1 = "SELECT * FROM interactive WHERE id_user = ? AND id_movie = ?"
+    return new Promise((resolve, reject) => {
+        pool.query(query1, [idUser, idMovie], (err1, results) => {
+            if (err1) reject(err1)
+            if (results.length > 0)
+                resolve(results[0])
+            else resolve()
+        })
+    })
+
 }
 
 const insertMovieStart = (data) => {
@@ -184,7 +183,7 @@ const getTypeByMovieId = (movieId) => {
 const addTimeWatcher = (idUser, movieId, value) => {
     return new Promise((reslove, reject) => {
         var query = `SELECT * FROM interactive WHERE id_user = ? AND id_movie = ?`
-        pool.query(query, [idUser, movieId],(err, results) => {
+        pool.query(query, [idUser, movieId], (err, results) => {
             if (results.length == 0) {
                 var query1 = `INSERT INTO interactive (id_user, id_movie, time_watched) VALUES(?,?,?)`
                 pool.query(query1, [idUser, movieId, value], (err, results) => {
@@ -194,26 +193,26 @@ const addTimeWatcher = (idUser, movieId, value) => {
                     reslove()
                 })
             }
-            else{
+            else {
                 var query1 = `UPDATE interactive SET time_watched = ?  WHERE id_user = ? AND id_movie = ?`
-                pool.query(query1, [value,idUser, movieId ], (err, results) => {
+                pool.query(query1, [value, idUser, movieId], (err, results) => {
                     if (err) {
                         return reject(err)
                     }
                     reslove()
                 })
             }
-         
+
         })
     })
 }
 
 const addClicked = (idUser, movieId, value) => {
-    addReportDay(0,1,0)
+    addReportDay(0, 1, 0)
 
     return new Promise((reslove, reject) => {
         var query = `SELECT * FROM interactive WHERE id_user = ? AND id_movie = ?`
-        pool.query(query, [idUser, movieId],(err, results) => {
+        pool.query(query, [idUser, movieId], (err, results) => {
             if (results.length == 0) {
                 var query1 = `INSERT INTO interactive (id_user, id_movie, is_clicked) VALUES(?,?,?)`
                 pool.query(query1, [idUser, movieId, value], (err, results) => {
@@ -223,16 +222,16 @@ const addClicked = (idUser, movieId, value) => {
                     reslove()
                 })
             }
-            else{
+            else {
                 var query1 = `UPDATE interactive SET is_clicked = ?  WHERE id_user = ? AND id_movie = ?`
-                pool.query(query1, [value,idUser, movieId ], (err, results) => {
+                pool.query(query1, [value, idUser, movieId], (err, results) => {
                     if (err) {
                         return reject(err)
                     }
                     reslove()
                 })
             }
-         
+
         })
     })
 }
@@ -240,7 +239,7 @@ const addClicked = (idUser, movieId, value) => {
 const addLike = (idUser, movieId, value) => {
     return new Promise((reslove, reject) => {
         var query = `SELECT * FROM interactive WHERE id_user = ? AND id_movie = ?`
-        pool.query(query, [idUser, movieId],(err, results) => {
+        pool.query(query, [idUser, movieId], (err, results) => {
             if (results.length == 0) {
                 var query1 = `INSERT INTO interactive (id_user, id_movie, is_like) VALUES(?,?,?)`
                 pool.query(query1, [idUser, movieId, value], (err, results) => {
@@ -250,16 +249,16 @@ const addLike = (idUser, movieId, value) => {
                     reslove()
                 })
             }
-            else{
+            else {
                 var query1 = `UPDATE interactive SET is_like = ?  WHERE id_user = ? AND id_movie = ?`
-                pool.query(query1, [value,idUser, movieId ], (err, results) => {
+                pool.query(query1, [value, idUser, movieId], (err, results) => {
                     if (err) {
                         return reject(err)
                     }
                     reslove()
                 })
             }
-         
+
         })
     })
 }
@@ -267,7 +266,7 @@ const addLike = (idUser, movieId, value) => {
 const addPlayed = (idUser, movieId, value) => {
     return new Promise((reslove, reject) => {
         var query = `SELECT * FROM interactive WHERE id_user = ? AND id_movie = ?`
-        pool.query(query, [idUser, movieId],(err, results) => {
+        pool.query(query, [idUser, movieId], (err, results) => {
             if (results.length == 0) {
                 var query1 = `INSERT INTO interactive (id_user, id_movie, is_play) VALUES(?,?,?)`
                 pool.query(query1, [idUser, movieId, value], (err, results) => {
@@ -277,26 +276,26 @@ const addPlayed = (idUser, movieId, value) => {
                     reslove()
                 })
             }
-            else{
+            else {
                 var query1 = `UPDATE interactive SET is_play = ?  WHERE id_user = ? AND id_movie = ?`
-                pool.query(query1, [value,idUser, movieId ], (err, results) => {
+                pool.query(query1, [value, idUser, movieId], (err, results) => {
                     if (err) {
                         return reject(err)
                     }
                     reslove()
                 })
             }
-         
+
         })
     })
 }
 
 
 const addUserTimeWatched = (idUser, movieId, value) => {
-    addReportDay(0,0,1)
+    addReportDay(0, 0, 1)
     return new Promise((reslove, reject) => {
         var query = `SELECT * FROM watching_list WHERE id_user = ? AND id_movie = ?`
-        pool.query(query, [idUser, movieId],(err, results) => {
+        pool.query(query, [idUser, movieId], (err, results) => {
             if (results.length == 0) {
                 var query1 = `INSERT INTO watching_list (id_user, id_movie, current_duration) VALUES(?,?,?)`
                 pool.query(query1, [idUser, movieId, value], (err, results) => {
@@ -306,9 +305,9 @@ const addUserTimeWatched = (idUser, movieId, value) => {
                     reslove()
                 })
             }
-            else{
+            else {
                 var query1 = `UPDATE watching_list SET current_duration = ?  WHERE id_user = ? AND id_movie = ?`
-                pool.query(query1, [value,idUser, movieId ], (err, results) => {
+                pool.query(query1, [value, idUser, movieId], (err, results) => {
                     if (err) {
                         return reject(err)
                     }
@@ -326,7 +325,7 @@ const getWatchingList = (idUser) => {
         const query = `SELECT mv.*, t.current_duration FROM movie AS mv, watching_list AS t WHERE t.id_user = ? AND t.id_movie = mv.id `
 
         pool.query(query, [idUser], (err, results) => {
-            
+
             if (err) {
                 reject(err)
             }
@@ -337,7 +336,7 @@ const getWatchingList = (idUser) => {
 
 const deleteWatchinglist = (idMovie, idUser) => {
     return new Promise((reslove, reject) => {
-        console.log( idUser)
+        console.log(idUser)
         const query = `DELETE FROM watching_list WHERE id_movie = ? AND id_user = ?`
 
         pool.query(query, [idMovie, idUser], (err, results) => {
@@ -353,9 +352,9 @@ const deleteWatchinglist = (idMovie, idUser) => {
 const addReportDay = (visit = 0, click = 0, view = 0) => {
     return new Promise((reslove, reject) => {
         let date = new Date()
-        let dateStr = `${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`
+        let dateStr = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
         var query = `SELECT * FROM report_day WHERE create_at = ? `
-        pool.query(query, [dateStr],(err, results) => {
+        pool.query(query, [dateStr], (err, results) => {
             if (results.length == 0) {
                 var query1 = `INSERT INTO report_day (click, visit, view) VALUES(?,?,?)`
                 pool.query(query1, [click, visit, view], (err, results) => {
@@ -365,16 +364,16 @@ const addReportDay = (visit = 0, click = 0, view = 0) => {
                     reslove()
                 })
             }
-            else{
+            else {
                 var query1 = `UPDATE report_day SET view = ? , click = ?, visit = ? WHERE create_at = ?`
-                pool.query(query1, [results[0].view + view, results[0].click + click,results[0].visit + visit , dateStr], (err, results) => {
+                pool.query(query1, [results[0].view + view, results[0].click + click, results[0].visit + visit, dateStr], (err, results) => {
                     if (err) {
                         return reject(err)
                     }
                     reslove()
                 })
             }
-         
+
         })
     })
 }
@@ -391,10 +390,11 @@ module.exports = {
     countMovieOfType: countMovieOfType,
     getTypeByMovieId: getTypeByMovieId,
     addTimeWatcher: addTimeWatcher,
-    addClicked:addClicked,
-    addUserTimeWatched:addUserTimeWatched,
-    getWatchingList:getWatchingList,
-    deleteWatchinglist:deleteWatchinglist,
-    addLike:addLike,
-    addPlayed:addPlayed
+    addClicked: addClicked,
+    addUserTimeWatched: addUserTimeWatched,
+    getWatchingList: getWatchingList,
+    deleteWatchinglist: deleteWatchinglist,
+    addLike: addLike,
+    addPlayed: addPlayed,
+    checkLike: checkLike
 }
