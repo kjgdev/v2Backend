@@ -12,14 +12,27 @@ const getAllMovie = () => {
     })
 }
 
-const getMovieById = (id) => {
+const getMovieById = (id, idUser) => {
     let query = `SELECT * FROM movie WHERE id=?`
+    let query1 = "SELECT * FROM interactive WHERE id_user = ? AND id_movie = ?"
 
     return new Promise((reslove, reject) => {
         pool.query(query, [id], (err, results) => {
             if (err) reject(err)
 
-            reslove(results[0])
+            pool.query(query1, [idUser, id], (err1, results1) => {
+                if (err1) reject(err1)
+                let data = results[0]
+
+                if(results1.length == 0){
+                    data["is_like"] = 0
+                }
+                else {
+                    data["is_like"] = results1[0].is_like
+                }
+
+                reslove(data)
+            })
         })
     })
 }

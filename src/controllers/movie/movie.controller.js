@@ -18,9 +18,10 @@ const getAllMovie = async (req, res, next) => {
 
 const getMovieById = async (req, res, next) => {
     try {
+        let idUser = res.locals.userID
 
         let id = req.params.id
-        let dataResponse = await database.getMovieById(id)
+        let dataResponse = await database.getMovieById(id,idUser)
 
         if (dataResponse == null) {
             res.statusCode = 204
@@ -169,9 +170,10 @@ const getMovieByListId = async (req, res, next) => {
         var results = []
 
         let movieIds = req.body.arr_id_movie
+        let idUser = res.locals.userID
 
         for (let i = 0; i < movieIds.length; i++) {
-                let data = await database.getMovieById(movieIds[i])
+                let data = await database.getMovieById(movieIds[i], idUser)
 
                 results.push(data)
             
