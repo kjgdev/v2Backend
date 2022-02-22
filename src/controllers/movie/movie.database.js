@@ -22,6 +22,7 @@ const getMovieById = (id, idUser) => {
 
             pool.query(query1, [idUser, id], (err1, results1) => {
                 if (err1) reject(err1)
+                if (results.length> 0){
                 let data = results[0]
 
                 if(results1.length == 0){
@@ -30,8 +31,10 @@ const getMovieById = (id, idUser) => {
                 else {
                     data["is_like"] = results1[0].is_like
                 }
-
+            
                 reslove(data)
+            }
+            reject([])
             })
         })
     })
