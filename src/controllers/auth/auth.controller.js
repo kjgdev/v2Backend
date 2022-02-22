@@ -83,7 +83,7 @@ const login = async (req, res, next) => {
                 let refreshToken = generateRefreshToken(result.data, "7d", process.env.REFRESH_TOKEN_SECRET)
                 await database.insertRefreshToken(result.data.id, refreshToken)
 
-                console.log(result.data)
+
 
                 res.statusCode = 200
                 res.json({
@@ -92,7 +92,7 @@ const login = async (req, res, next) => {
                     id: result.data.id,
                     first: false
                 })
-                break
+             
             }
             case 5:{
                 let accessToken = generateAccessToken(result.data, "1h", process.env.ACCESS_TOKEN_SECRET)
@@ -219,7 +219,7 @@ const requireLinkVerifyEmail = async (req, res, next) => {
 
         let token = generateAccessToken(payload, '5m', process.env.VERIFY_TOKEN_SECRET)
 
-        let emailContent = `<a href='http://139.180.187.185:1111/api/auth/verify-email-token/${token}'>verify</a>`
+        let emailContent = `<a href='http://app.chilfix.online:1111/api/auth/verify-email-token/${token}'><h3>verify<h3></a>`
 
         mail.sendMail(email, 'Verify link', emailContent)
 
@@ -247,6 +247,9 @@ const verifyEmail = (req, res, next) => {
 
         database.verifyEmail(data.id)
         res.sendStatus(200)
+        res.writeHead(301, {
+            Location: `http://app.chilfix.online`
+          }).end()
     })
 }
 

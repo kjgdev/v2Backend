@@ -9,6 +9,7 @@ const getAllMovie = async (req, res, next) => {
 
         res.statusCode = 200
         res.json(dataResponse)
+      
 
     } catch (error) {
         flags.errorResponse(res, err)
