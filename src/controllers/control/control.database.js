@@ -86,13 +86,13 @@ const countUser = () => {
 const statistical = () => {
     return new Promise(async (reslove, reject) => {
         try {
-
-            let numList = await countList()
+    
+            let viewCount = await countView()
             let numMovie = await countListMovie()
             let numUser = await countUser()
             let responseData = {
                 movie: numMovie[0].movie,
-                list: numList[0].list,
+                view: viewCount.view,
                 user: numUser[0].user
             }
 
@@ -104,7 +104,209 @@ const statistical = () => {
     })
 }
 
+const addMovieView = (movieId) => {
+    return new Promise((reslove, reject) => {
+        var query = `SELECT * FROM interactive_movie WHERE id_movie = ? `
+        pool.query(query, [movieId],(err, results) => {
+            if (results.length == 0) {
+                var query1 = `INSERT INTO interactive_movie (id_movie, view_count) VALUES(?,1)`
+                pool.query(query1, [movieId], (err, results) => {
+                    if (err) {
+                        return reject(err)
+                    }
+                    reslove()
+                })
+            }
+            else{
+                var query1 = `UPDATE interactive_movie SET view_count = ?  WHERE id_movie = ?`
+                pool.query(query1, [results[0].view_count + 1, movieId ], (err, results) => {
+                    if (err) {
+                        return reject(err)
+                    }
+                    reslove()
+                })
+            }
+         
+        })
+    })
+}
+
+
+const addReportDay = (visit = 0, click = 0, view = 0) => {
+    return new Promise((reslove, reject) => {
+        let date = new Date()
+        let dateStr = `${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`
+        var query = `SELECT * FROM report_day WHERE create_at = ? `
+        pool.query(query, [dateStr],(err, results) => {
+            if (results.length == 0) {
+                var query1 = `INSERT INTO report_day (click, visit, view) VALUES(?,?,?)`
+                pool.query(query1, [click, visit, view], (err, results) => {
+                    if (err) {
+                        return reject(err)
+                    }
+                    reslove()
+                })
+            }
+            else{
+                var query1 = `UPDATE report_day SET view = ? , click = ?, visit = ? WHERE create_at = ?`
+                pool.query(query1, [results[0].view + view, results[0].click + click,results[0].visit + visit , dateStr], (err, results) => {
+                    if (err) {
+                        return reject(err)
+                    }
+                    reslove()
+                })
+            }
+         
+        })
+    })
+}
+
+const getTopView = () => {
+    return new Promise((reslove,reject) => {
+        var query = `SELECT mv.*, im.view_count FROM movie AS mv, interactive_movie AS im WHERE im.id_movie = mv.id ORDER BY view_count DESC`
+        
+        pool.query(query, (err, results) => {
+            if (err) {
+                return reject(err)
+            }
+
+            else return reslove(results)
+        })
+    })
+}
+
+const getReportDay = (from,to) => {
+    return new Promise((reslove,reject) => {
+        var query = `SELECT *  FROM report_day WHERE create_at >= ? AND create_at <= ?`
+        
+        pool.query(query, [from,to],(err, results) => {
+            if (err) {
+                return reject(err)
+            }
+
+            else return reslove(results)
+        })
+    })
+}
+
+
+
+const countNewUser = (fromTime, toTime) => {
+    return new Promise((reslove,reject) => {
+        var query = `SELECT COUNT(create_at) AS new_user FROM user WHERE create_at >= ? AND create_at <= ?`
+        
+        
+        pool.query(query,[fromTime, toTime] ,(err, results) => {
+            if (err) {
+                return reject(err)
+            }
+
+            else return reslove(results[0])
+        })
+    })
+}
+
+const countViewNow = (fromTime, toTime) => {
+    return new Promise((reslove,reject) => {
+        var query = `SELECT COUNT(create_at) AS view FROM watching_list WHERE create_at >= ? AND create_at <= ?`
+        
+        
+        pool.query(query,[fromTime, toTime] ,(err, results) => {
+            if (err) {
+                return reject(err)
+            }
+
+            else return reslove(results[0])
+        })
+    })
+}
+
+const countView = () => {
+    return new Promise((reslove,reject) => {
+        var query = `SELECT COUNT(create_at) AS view FROM watching_list`
+        
+        
+        pool.query(query,(err, results) => {
+            if (err) {
+                return reject(err)
+            }
+
+            else return reslove(results[0])
+        })
+    })
+}
+
+const addCountDevice = (type) => {
+    addReportDay(1,0,0)
+    return new Promise((reslove, reject) => {
+        var query = `SELECT * FROM device`
+        pool.query(query,(err, results) => {
+            let query1 = ""
+            let value = 0
+            switch(type){
+                case '0': {
+                    query1 = `UPDATE device SET mobile = ?`
+                    value = results[0].mobile + 1
+                    break;
+                }
+
+                case '1':{
+                    query1 = `UPDATE device SET tablet = ?`
+                    value = results[0].tablet + 1
+                    break;
+                }
+
+                case '2':{
+                    console.log(type)
+                    query1 = `UPDATE device SET desktop = ?`
+                    value = results[0].desktop + 1
+                    break;
+                }
+
+                default:{
+                    query1 = `UPDATE device SET tablet = ?`
+                    value = results[0].tablet + 1
+                    break;
+                }
+
+            }
+
+            pool.query(query1, [value], (err, results) => {
+                if (err) {
+                    return reject(err)
+                }
+                reslove()
+            })
+        })
+    })
+}
+
+
+const getCountDevice = (type) => {
+    return new Promise((reslove, reject) => {
+        var query = `SELECT * FROM device`
+      
+        pool.query(query, (err, results) => {
+            if (err) {
+                return reject(err)
+            }
+            reslove(results[0])
+        })
+      
+          
+
+    })
+}
+
+
 module.exports = {
     searchMovie: searchMovie,
-    statistical: statistical
+    statistical: statistical,
+    addMovieView:addMovieView,
+    getTopView:getTopView,
+    countNewUser:countNewUser,
+    addCountDevice:addCountDevice,
+    getCountDevice:getCountDevice,
+    countViewNow:countViewNow,
+    getReportDay:getReportDay
 }

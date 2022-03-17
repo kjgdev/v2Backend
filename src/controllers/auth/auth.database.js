@@ -3,11 +3,11 @@ const pool = require('@configs/database');
 const bcrypt = require('bcryptjs')
 
 const bcryptHash = async (pass) => {
-    return await bcrypt.hash(pass, 10)
+    return await bcrypt.hash(pass.toString(), 10)
 }
 
 const comparePassword = (pass, hashPass) => {
-    return bcrypt.compareSync(pass, hashPass);
+    return bcrypt.compareSync(pass.toString(), hashPass);
 }
 
 const register = async (data) => {
@@ -41,7 +41,7 @@ const login = async (data) => {
     }
 
     return new Promise((reslove, reject) => {
-        pool.query(query, [data.email],async (err, results) => {
+        pool.query(query, [data.email], async (err, results) => {
 
             if (err) return reject(err)
 
@@ -78,7 +78,11 @@ const login = async (data) => {
                 resultData.code = 1
             }
             else {
-                resultData.code = 4
+                if (userInfo.is_first != 1) {
+                    resultData.code = 5
+                }
+                else resultData.code = 4
+
                 resultData.data = {
                     id: userInfo.id,
                     email: userInfo.email
@@ -141,7 +145,7 @@ const updateStatusOnline = (idUser, value) => {
 }
 
 const checkRefreshToken = (token) => {
-    var query = "SELECT * FROM auth_token WHERE id_user=?"
+    var query = "SELECT * FROM auth_token WHERE token= ?"
 
     return new Promise((reslove, reject) => {
         pool.query(query, [token], (err, results) => {
@@ -170,13 +174,106 @@ const logout = (idUser) => {
     })
 }
 
+const changePass = (data, idUser,email) => {
+    return new Promise(async (reslove, reject) => {
 
+        let query1 = `SELECT * FROM user WHERE email= ?`
+        pool.query(query1, [email], async (err, results) => {
+            if (err || results.length === 0) {
+                reject(err)
+            }
+
+            let pass = results[0].password
+            let oldPassword = data.oldPassword
+
+            if (!comparePassword(oldPassword, pass)) {
+                reject(404)
+            }
+
+            let hashPass = await bcryptHash(data.newPassword)
+
+            var query = "UPDATE user SET password = ? WHERE id = ? "
+    
+            pool.query(query, [hashPass, idUser], async (err, results) => {
+                if (err) {
+                    reject(err)
+                }
+    
+                await updateStatusOnline(idUser, 0)
+                reslove()
+            })
+        })
+
+    
+    })
+}
+
+const updatePass = (password, idUser) => {
+    return new Promise(async (reslove, reject) => {
+
+        let hashPass = await bcryptHash(password)
+
+        var query = "UPDATE user SET password = ? WHERE id = ? "
+
+        pool.query(query, [hashPass, idUser], async (err, results) => {
+            if (err) {
+                reject(err)
+            }
+
+            reslove()
+        })
+    })
+}
+
+const getProfile = (idUser) => {
+    return new Promise(async (reslove, reject) => {
+        console.log(idUser)
+        var query = "SELECT * FROM user WHERE id = ?"
+
+        pool.query(query, [idUser], async (err, results) => {
+            if (err) {
+                reject(err)
+            }
+
+            console.log(results)
+
+            let data = {
+                gender: results[0].gender,
+                email: results[0].email,
+                dob: results[0].dob,
+                country: results[0].country,
+            }
+
+            reslove(data)
+        })
+    })
+}
+
+const updateProfile = (data, idUser) => {
+    return new Promise(async (reslove, reject) => {
+        
+        var query = "UPDATE user SET gender= ?, dob =?, country = ? WHERE id = ?"
+
+        pool.query(query, [data.gender, data.dob, data.country,idUser], async (err, results) => {
+            if (err) {
+                reject(err)
+            }
+
+            reslove()
+        })
+    })
+}
 module.exports = {
     register: register,
     login: login,
     checkEmailExist: checkEmailExist,
     verifyEmail: verifyEmail,
     insertRefreshToken: insertRefreshToken,
-    logout: logout
+    logout: logout,
+    changePass: changePass,
+    updatePass:updatePass,
+    getProfile:getProfile,
+    updateProfile:updateProfile,
+    checkRefreshToken:checkRefreshToken
 }
 
