@@ -1,6 +1,5 @@
 const pool = require('@configs/database');
 const schedule = require('node-schedule');
-const fetch = require('node-fetch');
 
 const setTimeRunAgain = (day) => {
     let query = `UPDATE settings SET step = ? WHERE id = 1`
