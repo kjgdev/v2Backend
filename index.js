@@ -3,7 +3,7 @@ var _ = require('lodash');
 const dotenv = require('dotenv')
 dotenv.config()
 const socket = require("socket.io");
-const schedule = require('node-schedule');
+const database = require("./src/controllers/settings/settings.database")
 
 
 // Set up running server
@@ -25,7 +25,7 @@ app.use(express.json())
 const routers = require('@routers')
 app.use('/api', routers)
 
-
+database.timeRunAgain()
 //========================================== socket ============================================//
 
 const io = socket(server);

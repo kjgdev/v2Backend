@@ -16,4 +16,7 @@ router.use('/user',userRouter)
 const controlRouter = require('./control.router')
 router.use('/control',controlRouter)
 
+const settingRouter = require('./settings.router')
+router.use('/settings',settingRouter)
+
 module.exports = router

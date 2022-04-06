@@ -12,7 +12,7 @@ const getAllMovie = async (req, res, next) => {
 
 
     } catch (error) {
-        flags.errorResponse(res, err)
+        flags.errorResponse(res, error)
     }
 }
 
@@ -37,7 +37,6 @@ const getMovieById = async (req, res, next) => {
         res.json(dataResponse)
 
     } catch (error) {
-        console.log(error)
         res.statusCode = 500
         res.json({
             message: error
